@@ -1,0 +1,16 @@
+{
+  "name": "백신볼 2100",
+  "short_name": "백신볼",
+  "description": "하수도에 숨은 내성 바이러스를 백신볼로 소멸시키는 세로형 슈팅 게임",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#090d0a",
+  "theme_color": "#090d0a",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
