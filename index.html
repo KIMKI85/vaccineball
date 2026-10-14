@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="fill">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}.fill body{padding:0!important}.fill #stage{padding-block:0!important}.fill #frame{border-radius:0!important;box-shadow:none!important}</style>
 <title>백신볼 2100</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -391,7 +391,8 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
 <script>
 (() => {
 'use strict';
-const W = 360, H = 640, TAU = Math.PI * 2;
+const W = 360, TAU = Math.PI * 2;
+let H = 640;   // logical height grows on tall phones in full-screen mode; width stays 360
 const LEN_SCALE = 1;
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const rand = (a, b) => a + Math.random() * (b - a);
@@ -401,11 +402,17 @@ function mulberry(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=M
 
 const stageEl = $('#stage'), frame = $('#frame'), cv = $('#game'), ctx = cv.getContext('2d'), mapCv = $('#mapCv');
 let unit = 1;
+/* Normal mode: a 9:16 card. Full-screen mode (html.fill, used by the installed web app):
+   on screens taller than 9:16 the frame fills the screen and the play field gets taller. */
 function fit() {
   const st = stageEl.getBoundingClientRect();
-  const avH = st.height - 24;
-  const fw = Math.floor(Math.min(st.width, avH * 9 / 16));
-  const fh = Math.floor(fw * 16 / 9);
+  const fill = document.documentElement.classList.contains('fill');
+  const avH = st.height - (fill ? 0 : 24);
+  let fw, fh;
+  if (fill && avH / st.width >= 16 / 9) { fw = Math.floor(st.width); fh = Math.floor(avH); }
+  else { fw = Math.floor(Math.min(st.width, avH * 9 / 16)); fh = Math.floor(fw * 16 / 9); }
+  H = Math.max(640, Math.min(820, Math.round(W * fh / fw)));
+  fh = Math.round(fw * H / W);
   frame.style.width = fw + 'px'; frame.style.height = fh + 'px';
   const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
   cv.width = Math.round(fw * dpr); cv.height = Math.round(fh * dpr);
@@ -1533,9 +1540,10 @@ function blitMap() {
   g.strokeStyle = '#2c343b'; g.lineWidth = 1; g.stroke();
   g.fillStyle = '#ff5a6e'; g.beginPath(); g.moveTo(cx, cy - 9); g.lineTo(cx + 3.5, cy); g.lineTo(cx - 3.5, cy); g.closePath(); g.fill();
   g.fillStyle = '#8a949e'; g.beginPath(); g.moveTo(cx, cy + 9); g.lineTo(cx + 3.5, cy); g.lineTo(cx - 3.5, cy); g.closePath(); g.fill();
-  g.strokeStyle = '#c3ccd4'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(14, 626); g.lineTo(14, 630); g.lineTo(58, 630); g.lineTo(58, 626); g.stroke();
-  g.textAlign = 'left'; g.font = '600 8px "IBM Plex Mono",monospace'; g.fillStyle = '#c3ccd4'; g.fillText('500 m', 14, 622);
-  g.textAlign = 'right'; g.fillStyle = 'rgba(160,170,180,.55)'; g.fillText('오르비스 시 하수도본부 · 2100', W - 10, 630);
+  const by = H - 10;
+  g.strokeStyle = '#c3ccd4'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(14, by - 4); g.lineTo(14, by); g.lineTo(58, by); g.lineTo(58, by - 4); g.stroke();
+  g.textAlign = 'left'; g.font = '600 8px "IBM Plex Mono",monospace'; g.fillStyle = '#c3ccd4'; g.fillText('500 m', 14, by - 8);
+  g.textAlign = 'right'; g.fillStyle = 'rgba(160,170,180,.55)'; g.fillText('오르비스 시 하수도본부 · 2100', W - 10, by);
 }
 function focusPin(n) { mapOffT = clamp(STAGES[n - 1].y - 240, 0, MAP_H - H); }
 
@@ -1809,7 +1817,11 @@ addEventListener('keyup', e => {
   if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.r = false;
 });
 document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
-addEventListener('resize', () => { fit(); if (S.state === 'map') drawMap(); });
+addEventListener('resize', () => {
+  fit();
+  if (player) { player.y = H - 96; }
+  if (S.state === 'map') { renderMapUI(); drawMap(); selectStage(S.sel); mapOff = mapOffT; blitMap(); }
+});
 
 /* Title legend shows the virus sprites */
 const legend = $('#legend');
