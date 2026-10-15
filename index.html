@@ -154,14 +154,25 @@ h2{font-family:var(--f-display);font-weight:400;font-size:10cqw;line-height:1.05
 .title-foot .linkish{color:#c9d6c6;font-size:2.8cqw}
 .title:focus-visible .touch span{outline:2px solid var(--hazard);outline-offset:1cqw}
 
+/* Sound-unlock splash shown once per launch, before the title */
+.splash{z-index:6;background:#040705;display:grid;place-items:center;cursor:pointer;transition:opacity .6s ease}
+.splash.out{opacity:0;pointer-events:none}
+.splash-in{display:grid;justify-items:center;gap:2.4cqw;text-align:center}
+.splash-in p{font-family:var(--f-display);font-size:6.4cqw;color:var(--ink)}
+.splash-in small{font-family:var(--f-data);font-size:2.6cqw;letter-spacing:.14em;color:var(--ink-dim)}
+.splash-ring{width:14cqw;height:14cqw;border-radius:50%;border:.6cqw solid var(--vaccine);box-shadow:0 0 4cqw rgba(63,225,245,.5),inset 0 0 3cqw rgba(63,225,245,.4);animation:pulse 1.2s ease-in-out infinite alternate}
+
 /* Chapter map */
 .full{position:absolute;inset:0;overflow:hidden;background:#181c20}
 #mapCv{position:absolute;inset:0;width:100%;height:100%;display:block}
 .map-top{position:absolute;left:0;right:0;top:0;padding:3cqw 3.4cqw 0;display:grid;gap:2cqw;z-index:3}
 .searchbar{display:flex;align-items:center;gap:2cqw;background:var(--panel-2);border-radius:99px;padding:1.4cqw 1.6cqw;box-shadow:0 1cqw 4cqw rgba(0,0,0,.55);border:1px solid #2c343b}
 .round-btn{flex:none;width:8.4cqw;height:8.4cqw;border-radius:50%;border:0;background:transparent;color:var(--ink);font-size:5.4cqw;line-height:1;cursor:pointer;display:grid;place-items:center}
+.round-btn.sm{width:6.4cqw;height:6.4cqw;font-size:3cqw;background:rgba(255,255,255,.06)}
+.round-btn:disabled{opacity:.25;cursor:default}
+#mapBack{font-size:4.6cqw}
 .sb-text{display:grid;line-height:1.3;min-width:0;flex:1}
-.sb-text b{font-size:3.6cqw}
+.sb-text b{font-size:3.4cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sb-text span{font-size:2.7cqw;color:var(--ink-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .prog-chip{flex:none;font-family:var(--f-data);font-size:2.8cqw;font-weight:600;color:#04202a;background:var(--vaccine);padding:1.3cqw 2.6cqw;border-radius:99px;white-space:nowrap}
 .owned{display:flex;gap:1.4cqw;align-items:center;overflow-x:auto;scrollbar-width:none;padding-bottom:1cqw}
@@ -265,8 +276,16 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
       <div class="title-shade"></div>
       <div class="touch" id="touch"><span>터치 스타트</span><small>TOUCH TO START</small></div>
       <div class="title-foot">
-        <span id="titleProg">챕터 1 · 정화 0/10</span>
+        <span id="titleProg">전체 정화 0/100</span>
         <span class="toggles"><button class="linkish" id="briefBtn">작전 브리핑</button><button class="linkish" data-bgm>배경음 켜짐</button><button class="linkish" data-sound>효과음 켜짐</button></span>
+      </div>
+    </section>
+
+    <section class="full splash" id="splashScr" role="button" tabindex="0" aria-label="화면을 터치해서 시작">
+      <div class="splash-in">
+        <span class="splash-ring"></span>
+        <p>화면을 터치해 주세요</p>
+        <small>TOUCH TO BEGIN · 사운드가 함께 재생돼요</small>
       </div>
     </section>
 
@@ -281,7 +300,7 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
           <dl class="howto">
             <dt>이동</dt><dd>화면 좌우 드래그 · ← → 키</dd>
             <dt>공격</dt><dd>항체탄 자동 발사</dd>
-            <dt>성장</dt><dd>구역마다 강화 1개를 골라 챕터 끝까지 쌓아 갑니다</dd>
+            <dt>성장</dt><dd>구역마다 강화 1개를 골라 끝까지 쌓아 갑니다 · 10개 챕터, 100개 구역</dd>
           </dl>
           <div class="actions">
             <button class="btn ghost" id="briefClose">닫기</button>
@@ -295,8 +314,10 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
       <div class="pins" id="pins"></div>
       <div class="map-top">
         <div class="searchbar">
-          <button class="round-btn" id="mapBack" aria-label="타이틀로">‹</button>
-          <div class="sb-text"><b>오르비스 시티 하수관망</b><span>챕터 1 · 실버라인 하류 구역</span></div>
+          <button class="round-btn" id="mapBack" aria-label="타이틀로">⌂</button>
+          <button class="round-btn sm" id="chPrev" aria-label="이전 챕터">◀</button>
+          <div class="sb-text"><b id="chTitle">챕터 1 · 실버라인 하류 구역</b><span id="chSub">오르비스 시티 하수관망</span></div>
+          <button class="round-btn sm" id="chNext" aria-label="다음 챕터">▶</button>
           <span class="prog-chip" id="mapProg">정화 0/10</span>
         </div>
         <div class="owned" id="owned"></div>
@@ -441,47 +462,80 @@ const VT = {
   boss:    { name:'숙주 바이러스', note:'보스', spr:['boss'],    size:150, r:46, score:4000, cols:['#8a55e0','#c8a2ff','#4a2390'] },
 };
 
-/* ---------- Chapter 1: ten sewer sites across a night-mode city map ---------- */
+/* ---------- Campaign: 10 chapters × 10 sewer sites, one global difficulty curve (diff 0 → 1 across 100 stages) ---------- */
 const ORDER = ['grunt','zig','dart','split','charger','armor','spit','worm','brood'];
+const UNLOCK = { grunt:1, zig:2, dart:4, split:6, charger:9, armor:12, spit:16, worm:21, brood:27 };   // global stage where each virus first appears
 const WEIGHT = { grunt:5, zig:2.2, dart:2, split:1.8, charger:1.4, armor:1.4, spit:1.2, worm:1, brood:.9 };
-const STAGES = [
-  { name:'라일락 우수관',     area:'웨스트밀 구 라일락가',     depth:8,  x:58,  y:156, len:320 },
-  { name:'머큐리 지선',       area:'웨스트밀 구 머큐리로',     depth:11, x:150, y:136, len:340 },
-  { name:'캔버스 차집관',     area:'노스게이트 구 예술지구',   depth:13, x:256, y:162, len:360 },
-  { name:'콜린스 분류관',     area:'노스게이트 구 대학가',     depth:15, x:300, y:238, len:380 },
-  { name:'센트럴 저류조',     area:'센트럴 구 지하 저류시설', depth:22, x:194, y:266, len:340, boss:'mid' },
-  { name:'앰버 간선',         area:'센트럴 구 앰버 광장',      depth:17, x:80,  y:300, len:400 },
-  { name:'퀼 섬 배수문',      area:'하버사이드 구 퀼 섬',      depth:19, x:98,  y:446, len:420 },
-  { name:'레일야드 우회관',   area:'하버사이드 구 철도기지',   depth:21, x:212, y:466, len:440 },
-  { name:'레이크쇼어 차집관로', area:'레이크쇼어 구 호반가',   depth:24, x:298, y:530, len:460 },
-  { name:'실버라인 물재생센터', area:'최종 처리 구역',         depth:31, x:168, y:584, len:400, boss:'final' },
-].map((s, i) => ({ ...s, n: i + 1, pool: ORDER.slice(0, Math.min(ORDER.length, i + 2)) }));
+const SUFFIX = ['우수관','지선','차집관','분류관','저류조','간선','배수문','우회관','차집관로'];
+const CHAPTERS = [
+  { name:'실버라인 하류 구역', district:'웨스트밀',
+    names:['라일락 우수관','머큐리 지선','캔버스 차집관','콜린스 분류관','센트럴 저류조','앰버 간선','퀼 섬 배수문','레일야드 우회관','레이크쇼어 차집관로','실버라인 물재생센터'],
+    areas:['웨스트밀 구 라일락가','웨스트밀 구 머큐리로','노스게이트 구 예술지구','노스게이트 구 대학가','센트럴 구 지하 저류시설','센트럴 구 앰버 광장','하버사이드 구 퀼 섬','하버사이드 구 철도기지','레이크쇼어 구 호반가','최종 처리 구역'],
+    labels:['웨스트밀 구','노스게이트 구','센트럴 구','하버사이드 구','리버뷰 구','레이크쇼어 구','그린필드 구','아이언웍스 구','이스트우드 구'] },
+  { name:'노스게이트 산업단지', district:'노스게이트', marks:['볼트','크레인','스미스','피스톤','노스게이트','기어','리벳','코크스','슬래그'], final:'용광로 폐수처리장' },
+  { name:'하버사이드 항만지구', district:'하버사이드', marks:['앵커','부두','등대','갈매기','하버','컨테이너','세관','조선소','방파제'], final:'해수 정화센터' },
+  { name:'센트럴 금융지구', district:'센트럴', marks:['타워','증권가','아트리움','플라자','센트럴','메트로','스카이','오페라','리버티'], final:'크라운 지하저수조' },
+  { name:'그린필드 주거단지', district:'그린필드', marks:['메이플','오크','클로버','데이지','그린필드','파인','윌로우','아이비','로즈'], final:'엘름 정화센터' },
+  { name:'아이언웍스 공장지대', district:'아이언웍스', marks:['스파크','프레스','터빈','보일러','아이언웍스','컨베이어','주물','냉각탑','폐유'], final:'제련 폐수처리장' },
+  { name:'레이크쇼어 호반지구', district:'레이크쇼어', marks:['페블','갈대','물안개','보트','레이크쇼어','수련','백조','등대섬','호반'], final:'심연 배수펌프장' },
+  { name:'이스트우드 연구단지', district:'이스트우드', marks:['랩','시약','큐브','펄스','이스트우드','매트릭스','플라스마','나노','양자'], final:'제로 격리처리장' },
+  { name:'올드타운 지하수로', district:'올드타운', marks:['벽돌','아치','랜턴','시계탑','올드타운','카타콤','우물','수도원','고성'], final:'망각의 대수로' },
+  { name:'코어 정수본부', district:'코어', marks:['게이트','필터','펌프','밸브','코어','압력','침전','소독','정수'], final:'모체 정수핵' },
+];
+const LAYOUT_A = [[58,156],[150,136],[256,162],[300,238],[194,266],[80,300],[98,446],[212,466],[298,530],[168,584]];
+const LAYOUT_B = [[300,150],[206,128],[104,160],[60,240],[170,270],[288,302],[270,446],[156,470],[62,532],[192,586]];
+function layoutFor(c) {
+  if (c === 1) return LAYOUT_A;
+  const base = (c - 1) % 4 < 2 ? LAYOUT_A : LAYOUT_B, mir = (c - 1) % 2 === 1, R = mulberry(c * 97);
+  return base.map(([x, y]) => [clamp((mir ? W - x : x) + (R() - .5) * 20, 44, W - 44), y + (R() - .5) * 14]);
+}
+const STAGES = [];
+CHAPTERS.forEach((ch, ci) => {
+  const c = ci + 1, pos = layoutFor(c);
+  if (!ch.labels) ch.labels = ch.marks.map(m => m + ' 지구');
+  for (let s = 1; s <= 10; s++) {
+    const n = ci * 10 + s, diff = (n - 1) / 99, boss = s === 5 ? 'mid' : s === 10 ? 'final' : null;
+    STAGES.push({
+      n, c, s, boss, diff, x: pos[s - 1][0], y: pos[s - 1][1],
+      name: ch.names ? ch.names[s - 1] : s === 10 ? ch.final : `${ch.marks[s - 1]} ${SUFFIX[s - 1]}`,
+      area: ch.areas ? ch.areas[s - 1] : `${ch.district} 구 ${ch.marks[s - 1] || ''}${s === 5 ? ' 저류시설' : s === 10 ? ' 최종 처리 구역' : ' 일대'}`.replace('  ', ' '),
+      depth: Math.round(8 + diff * 34 + (boss ? 6 : 0) + s * .4),
+      len: Math.round(300 + diff * 170 + (s - 1) * 5 - (boss ? 40 : 0)),
+      pool: ORDER.filter(t => UNLOCK[t] <= n),
+    });
+  }
+});
+const label = st => `${st.c}-${st.s}`;
 
-/* Progress persists per device */
+/* Progress persists per device (same key as before, so chapter 1 progress carries over) */
 const SAVE_KEY = 'vaccineball2100.ch1';
-const freshSave = () => ({ cleared: [], up: {}, picked: {}, best: {} });
+const freshSave = () => ({ cleared: [], up: {}, picked: {}, best: {}, medkit: 0 });
 let save = freshSave();
 try { const raw = localStorage.getItem(SAVE_KEY); if (raw) save = Object.assign(freshSave(), JSON.parse(raw)); } catch (e) {}
 function persist() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} }
 const isCleared = n => save.cleared.includes(n);
 const unlocked = n => n === 1 || isCleared(n - 1);
-function nextStage() { for (let n = 1; n <= 10; n++) if (!isCleared(n)) return n; return 0; }
+const chapUnlocked = c => c === 1 || isCleared((c - 1) * 10);
+const chapCleared = c => STAGES.filter(s => s.c === c && isCleared(s.n)).length;
+function nextStage() { for (let n = 1; n <= 100; n++) if (!isCleared(n)) return n; return 0; }
 
-/* ---------- Roguelike upgrades ---------- */
+/* ---------- Roguelike upgrades: half the old per-level effect, roughly double the level caps ---------- */
 const CAT = { atk: { label: '공격', c: '#3fe1f5' }, def: { label: '방어', c: '#b3a8ff' }, sup: { label: '지원', c: '#f2b632' } };
+const HOM_INT = [0, 2.6, 2.2, 1.85, 1.55, 1.3, 1.1];
 const UPG = {
-  rapid:  { name:'연사 강화',   cat:'atk', max:4, desc:l => `발사 속도 +${20 * l}%` },
-  power:  { name:'항체 증폭',   cat:'atk', max:3, desc:l => `항체탄 피해 +${40 * l}%` },
-  spread: { name:'확산 사출구', cat:'atk', max:2, desc:l => `항체탄 ${1 + 2 * l}갈래 발사` },
-  pierce: { name:'관통 항체',   cat:'atk', max:2, desc:l => `항체탄이 적을 ${l}마리 더 관통` },
-  homing: { name:'추적 나노봇', cat:'atk', max:3, desc:l => `${['', '1.6', '1.15', '0.8'][l]}초마다 가까운 적을 쫓는 추적탄 2발` },
-  orbit:  { name:'궤도 항체구', cat:'atk', max:3, desc:l => `항체구 ${l}개가 주위를 돌며 공격하고 포자를 막음` },
-  chain:  { name:'연쇄 정화',   cat:'atk', max:2, desc:l => `처치한 자리에서 ${l === 1 ? '작은' : '큰'} 정화 폭발` },
-  crit:   { name:'급소 타격',   cat:'atk', max:3, desc:l => `${12 * l}% 확률로 2배 피해` },
-  hull:   { name:'외피 보강',   cat:'def', max:2, desc:l => `백신볼 최대 ${3 + l}개` },
-  shield: { name:'항체 보호막', cat:'def', max:2, desc:l => l === 1 ? '구역 시작 시 보호막 1회' : '보호막이 18초마다 재생성' },
-  filter: { name:'정화 필터',   cat:'sup', max:2, desc:l => `놓친 바이러스 오염 -${30 * l}%` },
-  supply: { name:'보급 요청',   cat:'sup', max:2, desc:l => `보급 아이템 확률 +${60 * l}%` },
+  rapid:  { name:'연사 강화',   cat:'atk', max:10, desc:l => `발사 속도 +${8 * l}%` },
+  power:  { name:'항체 증폭',   cat:'atk', max:10, desc:l => `항체탄 피해 +${12 * l}%` },
+  spread: { name:'확산 사출구', cat:'atk', max:2,  desc:l => `항체탄 ${1 + 2 * l}갈래 발사 · 측면탄 피해 ${l === 1 ? 60 : 70}%` },
+  pierce: { name:'관통 항체',   cat:'atk', max:3,  desc:l => `항체탄이 적을 ${l}마리 더 관통` },
+  homing: { name:'추적 나노봇', cat:'atk', max:6,  desc:l => `${HOM_INT[l]}초마다 가까운 적을 쫓는 추적탄 ${l >= 4 ? 2 : 1}발` },
+  orbit:  { name:'궤도 항체구', cat:'atk', max:4,  desc:l => `항체구 ${l}개가 주위를 돌며 공격·포자 차단` },
+  chain:  { name:'연쇄 정화',   cat:'atk', max:4,  desc:l => `처치한 자리에서 반경 ${30 + 10 * l} 정화 폭발` },
+  crit:   { name:'급소 타격',   cat:'atk', max:8,  desc:l => `${5 * l}% 확률로 2배 피해` },
+  hull:   { name:'외피 보강',   cat:'def', max:3,  desc:l => `백신볼 최대 ${3 + l}개` },
+  shield: { name:'항체 보호막', cat:'def', max:2,  desc:l => l === 1 ? '구역 시작 시 보호막 1회' : '보호막이 24초마다 재생성' },
+  filter: { name:'정화 필터',   cat:'sup', max:4,  desc:l => `놓친 바이러스 오염 -${12 * l}%` },
+  supply: { name:'보급 요청',   cat:'sup', max:4,  desc:l => `보급 아이템 확률 +${30 * l}%` },
+  medkit: { name:'응급 백신볼', cat:'def', max:Infinity, extra:true, desc:() => '다음 구역에서만 백신볼 +1' },
 };
 const ICON = {
   rapid: '<path d="M6 20V9M12 20V4M18 20V9"/>',
@@ -496,30 +550,35 @@ const ICON = {
   shield: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>',
   filter: '<path d="M3 4h18l-7 8v7l-4 2v-9z"/>',
   supply: '<rect x="4" y="8" width="16" height="12" rx="2"/><path d="M4 12h16M12 8v12M8 8V5h8v3"/>',
+  medkit: '<rect x="3" y="8" width="18" height="8" rx="4"/><path d="M12 10v4M10 12h4"/>',
 };
 const svgIcon = id => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[id]}</svg>`;
 const lvl = id => save.up[id] || 0;
 function stats() {
+  const spread = lvl('spread'), homing = lvl('homing'), chain = lvl('chain');
   return {
-    fireInt: .17 / (1 + .2 * lvl('rapid')),
-    dmg: 1 + .4 * lvl('power'),
-    spread: lvl('spread'),
+    fireInt: .34 / (1 + .08 * lvl('rapid')),     // base fire rate is half of the first draft
+    dmg: 1 + .12 * lvl('power'),
+    spread, sideMul: [1, .6, .7][spread],
     pierce: lvl('pierce'),
     maxLives: 3 + lvl('hull'),
-    homing: lvl('homing'),
+    homing, homInt: HOM_INT[homing], homN: homing >= 4 ? 2 : 1,
     orbit: lvl('orbit'),
-    chain: lvl('chain'),
-    crit: .12 * lvl('crit'),
-    contMul: 1 - .3 * lvl('filter'),
-    dropMul: 1 + .6 * lvl('supply'),
+    chain, chainR: 30 + 10 * chain, chainDmg: .5 + .15 * chain,
+    crit: .05 * lvl('crit'),
+    contMul: 1 - .12 * lvl('filter'),
+    dropMul: 1 + .3 * lvl('supply'),
     shield: lvl('shield'),
   };
 }
 function rollChoices() {
-  const ids = Object.keys(UPG).filter(id => lvl(id) < UPG[id].max);
+  const ids = Object.keys(UPG).filter(id => !UPG[id].extra && lvl(id) < UPG[id].max);
   for (let i = ids.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [ids[i], ids[j]] = [ids[j], ids[i]]; }
-  return ids.slice(0, 3);
+  const out = ids.slice(0, 3);
+  if (out.length < 3) out.push('medkit');
+  return out;
 }
+const ownedIds = () => Object.keys(UPG).filter(id => !UPG[id].extra && lvl(id) > 0);
 
 /* ---------- Sewer track: channel center and width vary along its length ---------- */
 const K = 2, BW = 132, BH = 96, LW = 64, WT = 256, LEDGE = 30;
@@ -528,27 +587,25 @@ function mkCanvas(w, h) { const c = document.createElement('canvas'); c.width = 
 let brickPat, ledgePat, waterPat;
 function buildPatterns() {
   const R = mulberry(2100), rr = (a, b) => a + R() * (b - a);
+  // ground above the tunnel walls (out of bounds): dark stone slabs, cracks and moss, kept low-contrast
   let [c, g] = mkCanvas(BW, BH);
-  g.fillStyle = '#0e0c09'; g.fillRect(0, 0, BW, BH);
-  for (let row = 0; row < BH / 16; row++) {
-    const y = row * 16, off = (row % 2) * 11, shades = Array.from({ length: 6 }, () => R());
-    for (let bx = -22; bx < BW + 22; bx += 22) {
-      const v = shades[((bx / 22) % 6 + 6) % 6];
-      g.fillStyle = `hsl(${26 + v * 14} ${12 + v * 10}% ${9 + v * 7}%)`;
-      g.fillRect(bx + off + 1, y + 1, 20, 14);
-    }
+  g.fillStyle = '#121411'; g.fillRect(0, 0, BW, BH);
+  for (let row = 0; row < BH / 32; row++) for (let col = 0; col < BW / 44; col++) {
+    const v = R();
+    g.fillStyle = `hsl(${80 + v * 30} ${6 + v * 6}% ${6 + v * 3.5}%)`;
+    g.fillRect(col * 44 + 1, row * 32 + 1, 42, 30);
   }
-  for (let i = 0; i < 7; i++) {
-    const x = rr(2, BW - 4), y = R() * BH, len = rr(30, 80), w = rr(1.5, 3.5);
-    for (const yy of [y, y - BH]) {
-      const sg = g.createLinearGradient(0, yy, 0, yy + len);
-      sg.addColorStop(0, 'rgba(130,180,50,.32)'); sg.addColorStop(1, 'rgba(130,180,50,0)');
-      g.fillStyle = sg; g.fillRect(x, yy, w, len);
-    }
+  for (let i = 0; i < 260; i++) { g.fillStyle = R() < .6 ? 'rgba(0,0,0,.35)' : 'rgba(200,210,190,.035)'; g.fillRect(R() * BW, R() * BH, rr(1, 2.2), rr(1, 2.2)); }
+  g.strokeStyle = 'rgba(0,0,0,.5)'; g.lineWidth = .8;
+  for (let i = 0; i < 6; i++) { let x = R() * BW, y = R() * BH; g.beginPath(); g.moveTo(x, y); for (let k = 0; k < 4; k++) { x += rr(-8, 8); y += rr(4, 10); g.lineTo(x, y); } g.stroke(); }
+  for (let i = 0; i < 9; i++) {
+    const x = R() * BW, y = R() * BH, r0 = rr(3, 9);
+    g.fillStyle = `rgba(70,105,30,${rr(.15, .3)})`;
+    for (const ox of [-BW, 0, BW]) for (const oy of [-BH, 0, BH]) { g.beginPath(); g.ellipse(x + ox, y + oy, r0, r0 * .7, 0, 0, TAU); g.fill(); }
   }
   brickPat = ctx.createPattern(c, 'repeat');
   [c, g] = mkCanvas(LW, LW);
-  g.fillStyle = '#262b24'; g.fillRect(0, 0, LW, LW);
+  g.fillStyle = '#353a31'; g.fillRect(0, 0, LW, LW);
   for (let i = 0; i < 170; i++) {
     g.fillStyle = R() < .55 ? 'rgba(0,0,0,.28)' : 'rgba(255,255,235,.05)';
     g.fillRect(R() * LW, R() * LW, rr(1, 2.4), rr(1, 2.4));
@@ -567,23 +624,23 @@ buildPatterns();
 
 const TRACK = { keys: [], decor: [], end: 0, decEnd: 0 };
 const SEGS = {
-  wide:       () => ({ cx: 180, hw: rand(104, 116), amp: 0, len: rand(400, 700) }),
+  wide:       () => ({ cx: 180, hw: rand(96, 104), amp: 0, len: rand(400, 700) }),
   narrow:     () => ({ cx: 180 + rand(-12, 12), hw: rand(60, 70), amp: 0, len: rand(300, 520) }),
-  wind:       () => ({ cx: 180, hw: rand(84, 92), amp: rand(34, 44), len: rand(700, 1000) }),
-  shift:      () => ({ cx: 180 + (Math.random() < .5 ? -1 : 1) * rand(30, 40), hw: rand(86, 96), amp: 0, len: rand(400, 600) }),
-  narrowWind: () => ({ cx: 180, hw: rand(64, 72), amp: rand(26, 34), len: rand(600, 800) }),
+  wind:       () => ({ cx: 180, hw: rand(78, 86), amp: rand(30, 38), len: rand(700, 1000) }),
+  shift:      () => ({ cx: 180 + (Math.random() < .5 ? -1 : 1) * rand(24, 32), hw: rand(80, 88), amp: 0, len: rand(400, 600) }),
+  narrowWind: () => ({ cx: 180, hw: rand(62, 70), amp: rand(22, 30), len: rand(600, 800) }),
 };
 function pickSeg(u) {
   if (S.bossKind && u > S.stageLen - 1700) return SEGS.wide();
   const k = S.k;
-  const w = [['wide', 3 - k * 1.6], ['narrow', 1.1 + k * 2], ['wind', 1.8 + k * 1.2], ['shift', 1.5]];
+  const w = [['wide', 3.4 - k * 2], ['narrow', .8 + k * 2.2], ['wind', 1.6 + k * 1.4], ['shift', 1.5]];
   if (S.stageN >= 3) w.push(['narrowWind', .5 + k * 2]);
   let r = Math.random() * w.reduce((a, b) => a + b[1], 0);
   for (const [id, v] of w) if ((r -= v) <= 0) return SEGS[id]();
   return SEGS.wide();
 }
 function trackReset() {
-  TRACK.keys = [{ u: -3000, cx: 180, hw: 112, amp: 0 }, { u: 900, cx: 180, hw: 112, amp: 0 }];
+  TRACK.keys = [{ u: -3000, cx: 180, hw: 100, amp: 0 }, { u: 900, cx: 180, hw: 100, amp: 0 }];
   TRACK.end = 900; TRACK.decor = []; TRACK.decEnd = -H - 100;
 }
 function trackExtend(upTo) {
@@ -616,14 +673,16 @@ const newDebris = y => ({ k: ['bubble','bubble','leaf','can','foam'][Math.random
 const debris = Array.from({ length: 8 }, () => newDebris(rand(0, H)));
 
 /* ---------- State ---------- */
-const S = { state: 'title', t: 0, bgY: 0, scroll: 60, sel: 1 };
+const S = { state: 'title', t: 0, bgY: 0, scroll: 60, sel: 1, mapCh: 1 };
 let player, bullets, missiles, enemies, spores, items, parts, texts, P;
 const keys = { l: false, r: false };
 
 function reset(n) {
   const st = STAGES[n - 1];
   P = stats();
-  Object.assign(S, { stageN: n, st, k: (n - 1) / 9, pool: st.pool, stageLen: st.len * 10 * LEN_SCALE, bossKind: st.boss || null, baseScroll: 58 + n * 4,
+  // st.diff runs 0 (1-1) → 1 (10-10); every difficulty knob below is driven by it
+  Object.assign(S, { stageN: n, st, k: st.diff, chap: st.c, pool: st.pool, stageLen: st.len * 10 * LEN_SCALE, bossKind: st.boss || null,
+    baseScroll: 58 + st.diff * 34, hpMul: 1 + st.diff * 2.4, spdMul: 1 + st.diff * .5,
     score: 0, kills: 0, combo: 0, comboT: 0, maxCombo: 0, cont: 0, lives: P.maxLives, shake: 0, hurt: 0, boss: null, bossDown: false,
     ending: false, clearT: 0, spawnT: 1.4, fireT: 0, homT: 1, orbA: 0, shieldT: 0, spread: 0, shield: P.shield >= 1, bgY: 0, chainQ: [] });
   trackReset(); trackExtend(H + 400);
@@ -662,23 +721,35 @@ function sfx(k) {
   } catch (e) {}
 }
 
-/* ---------- BGM: low detuned drone with a tritone, sewer rumble, music-box line, heartbeat ---------- */
-const BGM = { on: true, started: false, step: 0, nextT: 0, lvl: -1 };
+/* ---------- BGM: three moods on one synth rig ----------
+   title → mysterious exploration (D minor, beatless: dark pad swells, sub boom, scattered bells, long echo)
+   map   → calm adventure setting out (C–Em–F–G, steady walking pulse: guitar-like arpeggio, soft bass, flute-like tune)
+   game  → eerie sewer (detuned drone with a tritone, rumble, music-box line, heartbeat) */
+const BGM = { on: true, started: false, step: 0, nextT: 0, lvl: -1, mode: '' };
 const PHRASE_A = [12, null, 15, null, 19, 18, null, 15, 14, null, 11, null, 13, 12, null, null];
 const PHRASE_B = [12, null, 15, null, 20, 19, null, 15, 18, null, 14, null, 13, null, 12, null];
+const midi = n => 440 * 2 ** ((n - 69) / 12);
+const CH_T = [[50, 57, 62, 65, 69], [46, 53, 58, 62, 69], [43, 50, 55, 58, 62], [45, 52, 57, 61, 64]];   // Dm(add9) · B♭maj7 · Gm · A
+const MEL_T = [null, null, null, null, 81, null, 79, null, 77, null, null, null, 76, null, 74, null];
+const CH_M = [[48, 60, 64, 67], [40, 55, 59, 64], [41, 57, 60, 65], [43, 55, 59, 62]];                   // C · Em · F · G
+const MEL_M = [[76, null, null, null, 79, null, 77, null], [76, null, null, null, 71, null, 74, null], [72, null, null, null, 77, null, 76, null], [74, null, null, null, null, null, 71, null]];
+const STEP_LEN = { title: .5, map: .26 };
+function bgmMode() { const s = S.state; return s === 'title' || s === 'brief' ? 'title' : s === 'map' ? 'map' : 'game'; }
 function bgmStart() {
   if (!actx || BGM.started) return;
   BGM.started = true;
   const m = actx.createGain(); m.gain.value = 0; m.connect(actx.destination); BGM.master = m;
   const dl = actx.createDelay(2); dl.delayTime.value = .46;
-  const fb = actx.createGain(); fb.gain.value = .5;
+  const fb = actx.createGain(); fb.gain.value = .5; BGM.fb = fb;
   const dlp = actx.createBiquadFilter(); dlp.type = 'lowpass'; dlp.frequency.value = 1600;
   const wet = actx.createGain(); wet.gain.value = .55;
   dl.connect(dlp); dlp.connect(fb); fb.connect(dl); dlp.connect(wet); wet.connect(m);
-  BGM.send = dl;
+  BGM.send = dl; BGM.delay = dl;
+  // game bus: drone + rumble
+  const gameBus = actx.createGain(); gameBus.gain.value = 0; gameBus.connect(m); BGM.gameBus = gameBus;
   const df = actx.createBiquadFilter(); df.type = 'lowpass'; df.frequency.value = 300; df.Q.value = 7;
   const dg = actx.createGain(); dg.gain.value = .13;
-  df.connect(dg); dg.connect(m);
+  df.connect(dg); dg.connect(gameBus);
   for (const [f, type, v] of [[55, 'sawtooth', 1], [55.4, 'sawtooth', 1], [77.78, 'triangle', .6]]) {
     const o = actx.createOscillator(), g = actx.createGain();
     o.type = type; o.frequency.value = f; g.gain.value = v;
@@ -689,14 +760,29 @@ function bgmStart() {
   BGM.drone = df;
   const nb = actx.createBuffer(1, actx.sampleRate * 2, actx.sampleRate), ch = nb.getChannelData(0);
   for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1;
+  BGM.noise = nb;
   const ns = actx.createBufferSource(); ns.buffer = nb; ns.loop = true;
   const nf = actx.createBiquadFilter(); nf.type = 'bandpass'; nf.frequency.value = 160; nf.Q.value = .8;
   const ng = actx.createGain(); ng.gain.value = .05;
   const nl = actx.createOscillator(), nlg = actx.createGain();
   nl.frequency.value = .11; nlg.gain.value = .035; nl.connect(nlg); nlg.connect(ng.gain); nl.start();
-  ns.connect(nf); nf.connect(ng); ng.connect(m); ns.start();
+  ns.connect(nf); nf.connect(ng); ng.connect(gameBus); ns.start();
+  // pad bus: four gliding voices through a slowly breathing lowpass (title + map)
+  const pf = actx.createBiquadFilter(); pf.type = 'lowpass'; pf.frequency.value = 900; pf.Q.value = .8;
+  const padBus = actx.createGain(); padBus.gain.value = 0;
+  const padSend = actx.createGain(); padSend.gain.value = .35;
+  pf.connect(padBus); padBus.connect(m); padBus.connect(padSend); padSend.connect(dl);
+  BGM.pad = [62, 65, 69, 74].map((n, i) => {
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = i % 2 ? 'triangle' : 'sine'; o.frequency.value = midi(n); o.detune.value = (i - 1.5) * 6; g.gain.value = .22;
+    o.connect(g); g.connect(pf); o.start(); return o;
+  });
+  const plfo = actx.createOscillator(), plg = actx.createGain();
+  plfo.frequency.value = .05; plg.gain.value = 320; plfo.connect(plg); plg.connect(pf.frequency); plfo.start();
+  BGM.padBus = padBus; BGM.padF = pf;
   setInterval(bgmTick, 60);
 }
+function setPad(notes, t, glide = .35) { BGM.pad.forEach((o, i) => o.frequency.setTargetAtTime(midi(notes[i % notes.length]), t, glide)); }
 function bgmNote(freq, t, dur, vol, type = 'triangle') {
   const o = actx.createOscillator(), g = actx.createGain(), v = actx.createOscillator(), vg = actx.createGain();
   o.type = type; o.frequency.setValueAtTime(freq, t);
@@ -704,6 +790,22 @@ function bgmNote(freq, t, dur, vol, type = 'triangle') {
   g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
   o.connect(g); g.connect(BGM.master); g.connect(BGM.send);
   o.start(t); o.stop(t + dur + .05); v.start(t); v.stop(t + dur + .05);
+}
+function bgmPluck(freq, t, dur, vol, type = 'sine', send = .5) {
+  // marimba-ish: fundamental plus a quick 4th-harmonic click
+  const o = actx.createOscillator(), o2 = actx.createOscillator(), g = actx.createGain(), g2 = actx.createGain(), s = actx.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t); o2.type = 'sine'; o2.frequency.setValueAtTime(freq * 4, t);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .006); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  g2.gain.setValueAtTime(vol * .35, t); g2.gain.exponentialRampToValueAtTime(.0001, t + .05);
+  s.gain.value = send;
+  o.connect(g); o2.connect(g2); g.connect(BGM.master); g2.connect(BGM.master); g.connect(s); s.connect(BGM.send);
+  o.start(t); o2.start(t); o.stop(t + dur + .05); o2.stop(t + .08);
+}
+function bgmHat(t, vol) {
+  const src = actx.createBufferSource(), hp = actx.createBiquadFilter(), g = actx.createGain();
+  src.buffer = BGM.noise; hp.type = 'highpass'; hp.frequency.value = 6500;
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + .05);
+  src.connect(hp); hp.connect(g); g.connect(BGM.master); src.start(t, Math.random()); src.stop(t + .07);
 }
 function bgmThump(t, vol) {
   const o = actx.createOscillator(), g = actx.createGain();
@@ -717,7 +819,34 @@ function bgmDrip(t) {
   g.gain.setValueAtTime(.045, t); g.gain.exponentialRampToValueAtTime(.0001, t + .09);
   o.connect(g); g.connect(BGM.send); g.connect(BGM.master); o.start(t); o.stop(t + .12);
 }
-function bgmStep(t) {
+function stepTitle(t) {
+  // mysterious: D minor, very slow, no beat — dark pad swells, sub "boom", scattered high bells with long echoes
+  const st = BGM.step % 64, i = st % 16, chord = CH_T[Math.floor(st / 16)];
+  if (i === 0) {
+    setPad(chord.slice(1), t, 1.6);
+    bgmNote(midi(chord[0] - 12), t, 7, .055, 'sine');
+    bgmNote(midi(chord[0] - 24), t, 5, .05, 'sine');
+  }
+  if (Math.random() < .3) {
+    const tone = chord[1 + (Math.random() * 4 | 0)] + 24;
+    bgmPluck(midi(tone), t + rand(0, .2), 2.8, .016, 'sine', 1);
+  }
+  if (Math.floor(st / 16) % 2 === 1 && MEL_T[i]) bgmPluck(midi(MEL_T[i]), t, 3.2, .022, 'sine', 1);
+  if (i === 10 && Math.random() < .4) bgmNote(midi(chord[0] + 18), t, 3, .012, 'triangle');   // tritone shimmer
+  if (Math.random() < .03) bgmDrip(t + rand(0, .4));
+}
+function stepMap(t) {
+  // calm adventure: C major, steady walking pulse — guitar-like arpeggio every eighth, soft bass on the beat, a flute-like tune
+  const st = BGM.step % 32, i = st % 8, bar = Math.floor(st / 8), chord = CH_M[bar];
+  if (i === 0) setPad([...chord.slice(1), chord[1] + 12], t, .25);
+  const arp = [1, 2, 3, 2, 1, 2, 3, 2][i];
+  bgmPluck(midi(chord[arp]), t, .5, i % 2 ? .02 : .028, 'triangle', .25);
+  if (i % 2 === 0) bgmPluck(midi((i % 4 === 0 ? chord[0] : chord[0] + 7) - 12), t, .45, .055, 'triangle', .05);
+  const mn = MEL_M[bar][i];
+  if (mn && BGM.step % 64 >= 32) bgmNote(midi(mn), t, i % 4 === 0 ? 1.1 : .8, .03, 'sine');
+  if (i === 2 || i === 6) bgmHat(t, .006);
+}
+function stepGame(t) {
   const st = BGM.step % 32, n = (st < 16 ? PHRASE_A : PHRASE_B)[st % 16];
   const live = S.state !== 'pause' && S.state !== 'over';
   if (live && n != null) bgmNote(220 * 2 ** (n / 12), t, 1.5, .045);
@@ -730,12 +859,25 @@ function bgmStep(t) {
 }
 function bgmTick() {
   if (!BGM.started) return;
-  const now = actx.currentTime;
+  const now = actx.currentTime, mode = bgmMode();
   const target = !BGM.on ? 0 : S.state === 'pause' ? .12 : S.state === 'over' ? .2 : .5;
   if (target !== BGM.lvl) { BGM.lvl = target; BGM.master.gain.setTargetAtTime(target, now, .6); }
+  if (mode !== BGM.mode) {
+    BGM.mode = mode; BGM.step = 0; BGM.nextT = now + .25;
+    BGM.gameBus.gain.setTargetAtTime(mode === 'game' ? 1 : 0, now, .7);
+    // title: dark, wide, long echo · map: brighter, tighter echo · game: drone takes over
+    BGM.padBus.gain.setTargetAtTime(mode === 'title' ? .11 : mode === 'map' ? .045 : 0, now, .7);
+    BGM.padF.frequency.setTargetAtTime(mode === 'title' ? 600 : 1500, now, .5);
+    BGM.delay.delayTime.setTargetAtTime(mode === 'title' ? .66 : mode === 'map' ? .39 : .46, now, .3);
+    BGM.fb.gain.setTargetAtTime(mode === 'title' ? .64 : mode === 'map' ? .28 : .5, now, .3);
+  }
   BGM.drone.Q.value = S.boss ? (S.boss.final ? 14 : 11) : 7;
   if (BGM.nextT < now) BGM.nextT = now + .05;
-  while (BGM.nextT < now + .25) { bgmStep(BGM.nextT); BGM.nextT += S.boss ? (S.boss.final ? .22 : .26) : .42; BGM.step++; }
+  while (BGM.nextT < now + .25) {
+    if (mode === 'title') stepTitle(BGM.nextT); else if (mode === 'map') stepMap(BGM.nextT); else stepGame(BGM.nextT);
+    BGM.nextT += mode === 'game' ? (S.boss ? (S.boss.final ? .22 : .26) : .42) : STEP_LEN[mode];
+    BGM.step++;
+  }
 }
 
 /* ---------- Spawning ---------- */
@@ -744,8 +886,9 @@ function laneOf(x, y, r) { const tk = track(S.bgY - y); return clamp((x - tk.c) 
 function placeEnemy(e) { const tk = track(S.bgY - e.y); e.x = tk.c + e.lane * laneSpan(e.r, tk); }
 function spawnEnemy(type, x, y) {
   const D = VT[type];
-  const e = { type, r: D.r, hp: D.hp, maxhp: D.hp, t: rand(0, 10), flash: 0, vl: 0, y: y ?? -D.r - 12,
-    vy: rand(D.vy[0], D.vy[1]) * (1 + S.k * .25), spin: Math.random() < .5 ? -1 : 1, cd: rand(1, 2.2), orbCd: 0 };
+  const hp = Math.round(D.hp * (type === 'mini' ? 1 + (S.hpMul - 1) * .5 : S.hpMul) * 10) / 10;
+  const e = { type, r: D.r, hp, maxhp: hp, t: rand(0, 10), flash: 0, vl: 0, y: y ?? -D.r - 12,
+    vy: rand(D.vy[0], D.vy[1]) * S.spdMul, spin: Math.random() < .5 ? -1 : 1, cd: rand(1, 2.2), orbCd: 0 };
   e.lane = x == null ? rand(-.85, .85) : laneOf(x, e.y, e.r);
   e.spr = D.spr[Math.random() * D.spr.length | 0];
   if (type === 'zig') { e.amp = rand(.25, .45); e.freq = rand(2.4, 3.4); e.bl = clamp(e.lane, -1 + e.amp, 1 - e.amp); }
@@ -756,27 +899,29 @@ function spawnEnemy(type, x, y) {
   return e;
 }
 function pickType() {
-  const pool = S.pool, newest = pool[pool.length - 1];
-  const w = pool.map(t => [t, WEIGHT[t] * (t === newest && pool.length > 2 ? 1.6 : 1)]);
+  // a virus that unlocked within the last 3 stages shows up more often so it gets introduced
+  const pool = S.pool;
+  const w = pool.map(t => [t, WEIGHT[t] * (UNLOCK[t] > 1 && S.stageN - UNLOCK[t] < 3 ? 1.7 : 1)]);
   let r = Math.random() * w.reduce((a, b) => a + b[1], 0);
   for (const [t, v] of w) if ((r -= v) <= 0) return t;
   return 'grunt';
 }
 function spawnWave() {
-  if (S.stageN >= 2 && Math.random() < .12 + S.k * .08) {
+  if (S.stageN >= 3 && Math.random() < .08 + S.k * .12) {
     const tk = track(S.bgY + 20), cx = tk.c + rand(-.3, .3) * tk.hw, gap = Math.min(26, tk.hw * .24);
     for (let i = 0; i < 5; i++) { const o = i - 2; spawnEnemy('grunt', cx + o * gap, -20 - Math.abs(o) * 24); }
     return;
   }
   spawnEnemy(pickType());
-  if (Math.random() < S.k * .35) spawnEnemy(pickType());
+  if (Math.random() < S.k * .45) spawnEnemy(pickType());
 }
 function spawnBoss(kind) {
-  const fin = kind === 'final', hp = fin ? 340 : 120;
+  // boss HP grows 75% per chapter: chapter 1 mid 70 / final 190 → chapter 10 mid 543 / final 1473
+  const fin = kind === 'final', hp = Math.round((fin ? 190 : 70) * (1 + (S.chap - 1) * .75));
   const e = { type: 'boss', final: fin, r: fin ? 58 : 46, size: fin ? 190 : 150, hp, maxhp: hp, x: W / 2, y: -100, t: 0, flash: 0,
     phase: 'enter', cd: 2, cd2: 4, spA: 0, spT: 0, rage: 0, spin: 1, orbCd: 0 };
   enemies.push(e); S.boss = e;
-  ui.bossName.textContent = fin ? '모체 바이러스' : '숙주 바이러스';
+  ui.bossName.textContent = `${fin ? '모체 바이러스' : '숙주 바이러스'} · 챕터 ${S.chap}`;
   ui.bossTag.textContent = fin ? 'FINAL BOSS' : 'MID BOSS';
   ui.bossbar.classList.toggle('final', fin);
   ui.warnTitle.textContent = fin ? '경고 · 모체 바이러스 접근' : '경고 · 숙주 바이러스 접근';
@@ -838,7 +983,7 @@ function kill(e) {
     spawnEnemy('mini', e.x - 8, e.y).vl = -.7;
     spawnEnemy('mini', e.x + 8, e.y).vl = .7;
   }
-  if (P.chain) S.chainQ.push({ x: e.x, y: e.y, r: 40 + 20 * (P.chain - 1), dmg: P.dmg * (.8 + .5 * (P.chain - 1)) });
+  if (P.chain) S.chainQ.push({ x: e.x, y: e.y, r: P.chainR, dmg: P.dmg * P.chainDmg });
   const chance = ((e.type === 'armor' || e.type === 'worm') ? .3 : e.type === 'mini' ? .03 : .07) * P.dropMul;
   if (Math.random() < chance) dropItem(e.x, e.y);
   shake(e.type === 'armor' || e.type === 'worm' ? 5 : 2.5);
@@ -916,6 +1061,7 @@ function updateParts(dt) {
 function updateBoss(e, dt) {
   if (e.phase === 'enter') { e.y += 55 * dt; if (e.y >= (e.final ? 150 : 135)) { e.phase = 'fight'; e.t0 = e.t; } return; }
   const tt = e.t - e.t0, ph = e.hp / e.maxhp;
+  const bm = 1 - (S.chap - 1) * .045, bs = (S.chap - 1) * 6;   // later chapters: faster attacks, faster spores
   e.y = (e.final ? 150 : 135) + Math.sin(tt * 1.6) * 14;
   const btk = track(S.bgY - e.y);
   e.x = btk.c + Math.sin(tt * (e.final ? .6 : .75)) * Math.max(0, btk.hw - (e.final ? 30 : 20));
@@ -927,22 +1073,23 @@ function updateBoss(e, dt) {
   if (e.cd <= 0) {
     const base = Math.atan2(player.y - e.y, player.x - e.x);
     if (e.final) {
-      e.cd = e.rage === 2 ? .85 : e.rage === 1 ? 1.15 : 1.4;
+      e.cd = (e.rage === 2 ? .85 : e.rage === 1 ? 1.15 : 1.4) * bm;
       const n = e.rage ? 7 : 5;
-      for (let k = 0; k < n; k++) shootSpore(e.x, e.y + e.r * .5, base + (k - (n - 1) / 2) * .17, 140 + e.rage * 15);
+      for (let k = 0; k < n; k++) shootSpore(e.x, e.y + e.r * .5, base + (k - (n - 1) / 2) * .17, 140 + e.rage * 15 + bs);
     } else {
-      e.cd = ph < .5 ? 1.15 : 1.6;
-      for (let k = -2; k <= 2; k++) shootSpore(e.x, e.y + e.r * .6, base + k * .22, 140);
+      e.cd = (ph < .5 ? 1.15 : 1.6) * bm;
+      const n = S.chap >= 6 ? 7 : 5;
+      for (let k = 0; k < n; k++) shootSpore(e.x, e.y + e.r * .6, base + (k - (n - 1) / 2) * .2, 140 + bs);
     }
   }
   e.cd2 -= dt;
   if (e.cd2 <= 0) {
-    e.cd2 = e.final ? (e.rage === 2 ? 3.2 : 5) : 4.5;
+    e.cd2 = (e.final ? (e.rage === 2 ? 3.2 : 5) : 4.5) * bm;
     spawnEnemy('brood', e.x - 38, e.y + 24); spawnEnemy('brood', e.x + 38, e.y + 24);
   }
   if (e.final && e.rage >= 1 && (tt % 6) < 2.4) {
     e.spT -= dt;
-    if (e.spT <= 0) { e.spT = .13; e.spA += .5; for (const o of [0, Math.PI]) shootSpore(e.x, e.y, e.spA + o, 115); }
+    if (e.spT <= 0) { e.spT = .13 * bm; e.spA += .5; for (const o of [0, Math.PI]) shootSpore(e.x, e.y, e.spA + o, 115 + bs * .5); }
   }
 }
 function update(dt) {
@@ -968,7 +1115,7 @@ function update(dt) {
   if (S.comboT > 0) { S.comboT -= dt; if (S.comboT <= 0) S.combo = 0; }
   if (P.shield >= 2 && !S.shield) {
     S.shieldT += dt;
-    if (S.shieldT >= 18) { S.shield = true; S.shieldT = 0; ring(player.x, player.y, 44, '#b3a8ff', .45); floatText(player.x, player.y - 30, '보호막 재생성', '#b3a8ff'); }
+    if (S.shieldT >= 24) { S.shield = true; S.shieldT = 0; ring(player.x, player.y, 44, '#b3a8ff', .45); floatText(player.x, player.y - 30, '보호막 재생성', '#b3a8ff'); }
   }
 
   // stage progression
@@ -985,22 +1132,22 @@ function update(dt) {
     S.fireT = P.fireInt;
     const n = 1 + 2 * P.spread + (S.spread > 0 ? 2 : 0);
     for (let i = 0; i < n; i++) {
-      const a = (i - (n - 1) / 2) * .13;
-      bullets.push({ x: player.x + Math.sin(a) * 8, y: player.y - player.r, vx: Math.sin(a) * 560, vy: -Math.cos(a) * 560, dmg: P.dmg, pierce: P.pierce, hits: [] });
+      const off = i - (n - 1) / 2, a = off * .13;
+      bullets.push({ x: player.x + Math.sin(a) * 8, y: player.y - player.r, vx: Math.sin(a) * 560, vy: -Math.cos(a) * 560, dmg: P.dmg * (off ? P.sideMul : 1), pierce: P.pierce, hits: [] });
     }
   }
   if (P.homing) {
     S.homT -= dt;
     if (S.homT <= 0) {
-      S.homT = [0, 1.6, 1.15, .8][P.homing];
-      for (const side of [-1, 1]) missiles.push({ x: player.x + side * 14, y: player.y - 4, vx: side * 140, vy: -180, t: 0, dmg: P.dmg * 1.5 });
+      S.homT = P.homInt;
+      for (const side of (P.homN === 2 ? [-1, 1] : [Math.random() < .5 ? -1 : 1])) missiles.push({ x: player.x + side * 14, y: player.y - 4, vx: side * 140, vy: -180, t: 0, dmg: P.dmg * 1.5 });
     }
   }
 
   // spawn
   if (!S.ending) {
     S.spawnT -= dt;
-    if (S.spawnT <= 0) { spawnWave(); S.spawnT = Math.max(.34, 1.05 - S.k * .5) * rand(.7, 1.3); }
+    if (S.spawnT <= 0) { spawnWave(); S.spawnT = (1.3 - S.k * .85) * rand(.75, 1.25); }
   }
 
   // enemies
@@ -1015,7 +1162,7 @@ function update(dt) {
       }
       if (e.phase === 'aim') {
         e.at -= dt;
-        if (e.at <= 0) { e.phase = 'dash'; const dx = e.tx - e.x, dy = H + 40 - e.y, m = Math.hypot(dx, dy); e.dx = dx / m * 340; e.dy = dy / m * 340; }
+        if (e.at <= 0) { e.phase = 'dash'; const dx = e.tx - e.x, dy = H + 40 - e.y, m = Math.hypot(dx, dy); const sp = 300 + S.k * 120; e.dx = dx / m * sp; e.dy = dy / m * sp; }
       } else { e.y += e.vy * dt; if (e.y >= e.stopY) { e.phase = 'aim'; e.at = .7; e.tx = player.x; } }
     }
     else if (e.type === 'dart') {
@@ -1029,7 +1176,7 @@ function update(dt) {
     else if (e.type === 'mini') { e.y += e.vy * dt; e.lane += e.vl * dt; e.vl *= 1 - dt * 2; }
     else if (e.type === 'spit') {
       e.y += e.vy * dt; e.cd -= dt;
-      if (e.cd <= 0 && e.y > 20 && e.y < H * .6) { e.cd = 2.4; shootSpore(e.x, e.y + e.r, Math.atan2(player.y - e.y, player.x - e.x), 150); }
+      if (e.cd <= 0 && e.y > 20 && e.y < H * .6) { e.cd = 2.6 - S.k * .9; shootSpore(e.x, e.y + e.r, Math.atan2(player.y - e.y, player.x - e.x), 140 + S.k * 40); }
     } else { e.y += e.vy * dt; e.lane += Math.sin(e.t * 2) * .06 * dt; }
     e.lane = clamp(e.lane, -1, 1); placeEnemy(e);
     if (e.y - e.r > H) { e.dead = true; leak(e); }
@@ -1075,7 +1222,7 @@ function update(dt) {
       const a = S.orbA + k * TAU / P.orbit, ox = player.x + Math.cos(a) * 38, oy = player.y + Math.sin(a) * 38;
       for (const e of enemies) {
         if (e.dead || e.orbCd > 0) continue;
-        if ((e.x - ox) ** 2 + (e.y - oy) ** 2 < (e.r + 7) ** 2) { e.orbCd = .3; damage(e, P.dmg * .9); burst(ox, oy, ['#3fe1f5', '#ffffff'], 4, 90, .7); }
+        if ((e.x - ox) ** 2 + (e.y - oy) ** 2 < (e.r + 7) ** 2) { e.orbCd = .3; damage(e, P.dmg * .6); burst(ox, oy, ['#3fe1f5', '#ffffff'], 4, 90, .7); }
       }
       for (const s of spores) {
         if (!s.dead && (s.x - ox) ** 2 + (s.y - oy) ** 2 < 144) { s.dead = true; burst(s.x, s.y, ['#e04d9a', '#ffc2e0'], 5, 80, .7); }
@@ -1276,25 +1423,88 @@ function drawItem(g, it, T) {
   g.stroke();
   g.restore();
 }
+/* Background, seen slightly from above:
+   out-of-bounds ground │ cap stone │ inner wall face (bricks in courses, darker toward the base) │ walkway │ sludge channel.
+   Rows are anchored to world distance (every 6 units) so brick joints scroll smoothly with the tunnel. */
+const FACE = 36, CAP = 6, NC = 5;
+const hash = n => { n = (n ^ 61) ^ (n >>> 16); n = n + (n << 3); n = n ^ (n >>> 4); n = Math.imul(n, 0x27d4eb2d); n = n ^ (n >>> 15); return (n >>> 0) % 4; };
+const FACE_COLS = {};
+for (const k of [-1, 1]) for (let b = 0; b < 4; b++) for (let j = 0; j < NC; j++)
+  FACE_COLS[`${k}${b}${j}`] = `hsl(${24 + b * 4} ${16 + b * 3}% ${6 + b * 1.5 + j * 2.4 - (k > 0 ? 1.2 : 0)}%)`;
 function drawBg(g, T) {
-  const ys = [], cs = [], hs = [];
-  for (let y = -12; y <= H + 18; y += 6) { const t = track(S.bgY - y); ys.push(y); cs.push(t.c); hs.push(t.hw); }
+  const ys = [], us = [], cs = [], hs = [];
+  const uTop = Math.ceil((S.bgY + 18) / 6) * 6;
+  for (let u = uTop; u >= S.bgY - H - 18; u -= 6) { const t = track(u); us.push(u); ys.push(S.bgY - u); cs.push(t.c); hs.push(t.hw); }
   const n = ys.length;
   const edge = (k, off) => i => cs[i] + k * (hs[i] + off);
   const line = f => { for (let i = 0; i < n; i++) { const x = f(i); i ? g.lineTo(x, ys[i]) : g.moveTo(x, ys[i]); } };
   const band = (fa, fb) => { g.beginPath(); line(fa); for (let i = n - 1; i >= 0; i--) g.lineTo(fb(i), ys[i]); g.closePath(); };
   const stroke = f => { g.beginPath(); line(f); g.stroke(); };
   g.lineJoin = 'round';
+
+  // 1. out-of-bounds ground, dimmed
   brickPat.setTransform(new DOMMatrix([1 / K, 0, 0, 1 / K, 0, S.bgY % BH]));
   g.fillStyle = brickPat; g.fillRect(-20, -20, W + 40, H + 40);
-  g.strokeStyle = 'rgba(0,0,0,.55)'; g.lineWidth = 16;
-  stroke(edge(-1, LEDGE + 6)); stroke(edge(1, LEDGE + 6));
+
+  for (const k of [-1, 1]) {
+    // 2. cap stone along the top of the wall
+    g.fillStyle = '#34372f'; band(edge(k, LEDGE + FACE + CAP), edge(k, LEDGE + FACE)); g.fill();
+    g.strokeStyle = '#575b4f'; g.lineWidth = 1; stroke(edge(k, LEDGE + FACE + CAP));
+    // 3. inner wall face: brick courses running along the tunnel, batched by colour
+    const paths = {};
+    const cw = FACE / NC;
+    for (let i = 0; i < n - 1; i++) {
+      for (let j = 0; j < NC; j++) {
+        const o0 = LEDGE + j * cw, o1 = o0 + cw;
+        const b = hash(Math.floor((us[i] - 1 + j * 9) / 18) * 7 + j * 131 + (k > 0 ? 977 : 0));
+        const key = `${k}${b}${j}`;
+        (paths[key] || (paths[key] = [])).push(i, o0, o1);
+      }
+    }
+    for (const key in paths) {
+      const a = paths[key];
+      g.fillStyle = FACE_COLS[key]; g.beginPath();
+      for (let q = 0; q < a.length; q += 3) {
+        const i = a[q], o0 = a[q + 1], o1 = a[q + 2];
+        g.moveTo(cs[i] + k * (hs[i] + o0), ys[i]); g.lineTo(cs[i] + k * (hs[i] + o1), ys[i]);
+        g.lineTo(cs[i + 1] + k * (hs[i + 1] + o1), ys[i + 1] + .6); g.lineTo(cs[i + 1] + k * (hs[i + 1] + o0), ys[i + 1] + .6); g.closePath();
+      }
+      g.fill();
+    }
+    // mortar: lines between courses and brick end joints
+    g.strokeStyle = 'rgba(0,0,0,.55)'; g.lineWidth = .9;
+    for (let j = 1; j < NC; j++) stroke(edge(k, LEDGE + j * cw));
+    g.beginPath();
+    for (let i = 0; i < n; i++) for (let j = 0; j < NC; j++) {
+      if ((((us[i] + j * 9) % 18) + 18) % 18 !== 0) continue;
+      g.moveTo(cs[i] + k * (hs[i] + LEDGE + j * cw), ys[i]); g.lineTo(cs[i] + k * (hs[i] + LEDGE + (j + 1) * cw), ys[i]);
+    }
+    g.stroke();
+    // lip shadow under the cap and ambient occlusion where the wall meets the walkway
+    g.save(); band(edge(k, LEDGE + FACE), edge(k, LEDGE)); g.clip();
+    g.strokeStyle = 'rgba(0,0,0,.45)'; g.lineWidth = 4; stroke(edge(k, LEDGE + FACE));
+    g.strokeStyle = 'rgba(0,0,0,.5)'; g.lineWidth = 12; stroke(edge(k, LEDGE));
+    g.restore();
+    g.strokeStyle = 'rgba(255,240,215,.08)'; g.lineWidth = 1; stroke(edge(k, LEDGE + FACE - 1));
+  }
+
+  // 4. out of bounds is pressed down with black shade; the walkway (in bounds) gets a soft shadow falling off the wall
+  for (const k of [-1, 1]) {
+    g.fillStyle = 'rgba(0,0,0,.5)'; band(edge(k, LEDGE), edge(k, 240)); g.fill();
+  }
   ledgePat.setTransform(new DOMMatrix([1 / K, 0, 0, 1 / K, 0, S.bgY % LW]));
   g.fillStyle = ledgePat;
   band(edge(-1, LEDGE), edge(-1, 0)); g.fill();
   band(edge(1, 0), edge(1, LEDGE)); g.fill();
-  g.strokeStyle = '#050605'; g.lineWidth = 2;
+  for (const k of [-1, 1]) {
+    g.save(); band(edge(k, LEDGE), edge(k, 0)); g.clip();
+    for (const [w, a] of [[30, .16], [18, .2], [9, .26], [3, .32]]) { g.strokeStyle = `rgba(0,0,0,${a})`; g.lineWidth = w; stroke(edge(k, LEDGE)); }
+    g.restore();
+  }
+  g.strokeStyle = '#000'; g.lineWidth = 2.5;
   stroke(edge(-1, LEDGE)); stroke(edge(1, LEDGE));
+
+  // 5. sludge channel
   g.save();
   band(edge(-1, 0), edge(1, 0)); g.clip();
   g.fillStyle = '#1c2a15'; g.fillRect(-20, -20, W + 40, H + 40);
@@ -1320,35 +1530,39 @@ function drawBg(g, T) {
   g.restore();
   g.strokeStyle = '#070a06'; g.lineWidth = 3; stroke(edge(-1, 0)); stroke(edge(1, 0));
   g.strokeStyle = 'rgba(120,165,55,.32)'; g.lineWidth = 2; stroke(edge(-1, -2.5)); stroke(edge(1, -2.5));
+
+  // 6. grates on the walkway, moss and outlet pipes on the wall face
   for (const d of TRACK.decor) {
     const y = S.bgY - d.u;
     if (y < -40 || y > H + 40) continue;
     const t = track(d.u), ang = Math.atan((track(d.u + 4).c - track(d.u - 4).c) / 8);
     if (d.kind === 'grate') {
-      g.save(); g.translate(t.c + d.side * (t.hw + LEDGE / 2), y); g.rotate(ang);
-      g.fillStyle = '#3a3f35'; g.fillRect(-12, -18, 24, 36);
-      g.fillStyle = '#060806'; g.fillRect(-10, -16, 20, 32);
-      g.fillStyle = '#4a4f44'; for (let b = 0; b < 5; b++) g.fillRect(-9 + b * 4, -16, 1.6, 32);
+      g.save(); g.translate(t.c + d.side * (t.hw + LEDGE / 2 - 3), y); g.rotate(ang);
+      g.fillStyle = '#3a3f35'; g.fillRect(-10, -17, 20, 34);
+      g.fillStyle = '#060806'; g.fillRect(-8, -15, 16, 30);
+      g.fillStyle = '#4a4f44'; for (let b = 0; b < 4; b++) g.fillRect(-7 + b * 4, -15, 1.6, 30);
       g.restore();
     } else if (d.kind === 'moss') {
-      const x = t.c + d.side * (t.hw + LEDGE);
-      g.fillStyle = 'rgba(80,120,35,.4)';
-      g.beginPath(); g.ellipse(x, y, 5 * d.s, 11 * d.s, ang, 0, TAU); g.fill();
-      g.fillStyle = 'rgba(110,150,45,.22)';
-      g.beginPath(); g.ellipse(x - d.side * 6, y + 4, 6 * d.s, 3.5 * d.s, 0, 0, TAU); g.fill();
+      const x = t.c + d.side * (t.hw + LEDGE + FACE * .45);
+      g.fillStyle = 'rgba(80,125,35,.45)';
+      g.beginPath(); g.ellipse(x, y, 5 * d.s, 13 * d.s, ang, 0, TAU); g.fill();
+      g.fillStyle = 'rgba(120,165,50,.25)';
+      g.beginPath(); g.ellipse(x - d.side * 3, y + 9 * d.s, 3 * d.s, 9 * d.s, ang, 0, TAU); g.fill();
     } else {
-      const x = t.c + d.side * (t.hw + LEDGE), x1 = t.c + d.side * (t.hw - 8);
-      g.fillStyle = '#3d3024'; g.beginPath(); g.arc(x, y, 13, 0, TAU); g.fill();
-      g.strokeStyle = '#6a4a2a'; g.lineWidth = 1.5; g.beginPath(); g.arc(x, y, 12, 0, TAU); g.stroke();
-      g.fillStyle = '#040504'; g.beginPath(); g.arc(x, y, 8.5, 0, TAU); g.fill();
+      const x = t.c + d.side * (t.hw + LEDGE + FACE * .5), x1 = t.c + d.side * (t.hw - 8);
+      g.save(); g.translate(x, y); g.rotate(ang);
+      g.fillStyle = '#2a211a'; g.beginPath(); g.ellipse(0, 0, 9, 13, 0, 0, TAU); g.fill();
+      g.strokeStyle = '#6a4a2a'; g.lineWidth = 1.5; g.beginPath(); g.ellipse(0, 0, 8.5, 12.5, 0, 0, TAU); g.stroke();
+      g.fillStyle = '#030403'; g.beginPath(); g.ellipse(-d.side * 1.5, 0, 5.5, 9, 0, 0, TAU); g.fill();
+      g.restore();
       g.save();
       g.setLineDash([5, 4]); g.lineDashOffset = -T * 46; g.lineCap = 'round';
-      g.strokeStyle = 'rgba(140,185,60,.55)'; g.lineWidth = 4;
-      g.beginPath(); g.moveTo(x - d.side * 3, y); g.quadraticCurveTo(x - d.side * 22, y - 3, x1, y + 14); g.stroke();
+      g.strokeStyle = 'rgba(140,185,60,.6)'; g.lineWidth = 4;
+      g.beginPath(); g.moveTo(x - d.side * 5, y); g.quadraticCurveTo(x - d.side * 30, y - 2, x1, y + 16); g.stroke();
       g.setLineDash([]);
       const rp = (((T * 1.6 + d.u * .01) % 1) + 1) % 1;
       g.strokeStyle = `rgba(170,210,90,${.35 * (1 - rp)})`; g.lineWidth = 1;
-      g.beginPath(); g.ellipse(x1, y + 15, 4 + rp * 12, 2 + rp * 4, 0, 0, TAU); g.stroke();
+      g.beginPath(); g.ellipse(x1, y + 17, 4 + rp * 12, 2 + rp * 4, 0, 0, TAU); g.stroke();
       g.restore();
     }
   }
@@ -1435,7 +1649,8 @@ function draw() {
 }
 
 /* ---------- Chapter map: night-mode top-down city ---------- */
-const nb = x => 350 + Math.sin(x / 70) * 12 - x * .05;            // north bank of the river
+const RIV = { amp: 12, f: 70, ph: 0 };                              // river shape, reseeded per chapter
+const nb = x => 350 + Math.sin(x / RIV.f + RIV.ph) * RIV.amp - x * .05;   // north bank of the river
 const sb = x => nb(x) + 54 + Math.sin(x / 50 + 1) * 6;           // south bank
 /* The city is taller than the screen (MAP_H); it is rendered once to an offscreen canvas and panned so the chosen pin stays above the sheet */
 const MAP_H = 900;
@@ -1448,20 +1663,23 @@ function drawMap() {
   mapWorld.width = mapCv.width; mapWorld.height = Math.round(MAP_H * u);
   const g = mapWorld.getContext('2d');
   g.setTransform(u, 0, 0, u, 0, 0);
-  const R = mulberry(1985), rr = (a, b) => a + R() * (b - a);
+  const c = S.mapCh, ch = CHAPTERS[c - 1], chStages = STAGES.filter(st => st.c === c);
+  const R = mulberry(1985 + (c - 1) * 7919), rr = (a, b) => a + R() * (b - a);
+  if (c === 1) Object.assign(RIV, { amp: 12, f: 70, ph: 0 }); else Object.assign(RIV, { amp: rr(7, 17), f: rr(52, 92), ph: rr(0, 6) });
+  const parkRate = c === 5 ? .2 : c === 6 ? .02 : c === 7 ? .12 : .07;
   g.fillStyle = '#181c20'; g.fillRect(0, 0, W, MAP_H);
   // city blocks on a slightly rotated street grid
-  g.save(); g.translate(W / 2, H / 2); g.rotate(-.14); g.translate(-W / 2, -H / 2);
+  g.save(); g.translate(W / 2, H / 2); g.rotate(c === 1 ? -.14 : rr(-.3, .3)); g.translate(-W / 2, -H / 2);
   const xs = [], ysG = [];
   for (let x = -160; x < W + 160; x += rr(30, 46)) xs.push(x);
   for (let y = -160; y < MAP_H + 160; y += rr(26, 40)) ysG.push(y);
   for (let i = 0; i < xs.length - 1; i++) for (let j = 0; j < ysG.length - 1; j++) {
     const x0 = xs[i] + 2, y0 = ysG[j] + 2, w = xs[i + 1] - xs[i] - 4, h = ysG[j + 1] - ysG[j] - 4, v = R();
-    if (v < .07) {
+    if (v < parkRate) {
       g.fillStyle = '#1b3023'; g.fillRect(x0, y0, w, h);
       g.fillStyle = '#21402c'; for (let k = 0; k < 6; k++) { g.beginPath(); g.arc(x0 + rr(3, w - 3), y0 + rr(3, h - 3), rr(1.5, 3.5), 0, TAU); g.fill(); }
     } else {
-      g.fillStyle = v < .55 ? '#20252a' : '#23292f'; g.fillRect(x0, y0, w, h);
+      g.fillStyle = c === 6 ? (v < .55 ? '#22201d' : '#26231f') : (v < .55 ? '#20252a' : '#23292f'); g.fillRect(x0, y0, w, h);
       if (R() < .7) {
         g.fillStyle = '#292f36';
         const nB = 1 + (R() * 3 | 0);
@@ -1476,7 +1694,8 @@ function drawMap() {
   // urban expressway
   g.lineCap = 'round';
   g.strokeStyle = '#4b4226'; g.lineWidth = 8;
-  g.beginPath(); g.moveTo(-20, 230); g.bezierCurveTo(90, 210, 230, 300, 380, 268); g.stroke();
+  const e1 = c === 1 ? [230, 210, 300, 268] : [rr(190, 250), rr(180, 240), rr(270, 320), rr(230, 290)];
+  g.beginPath(); g.moveTo(-20, e1[0]); g.bezierCurveTo(90, e1[1], 230, e1[2], 380, e1[3]); g.stroke();
   g.strokeStyle = '#6a5d33'; g.lineWidth = 2.5; g.stroke();
   // river with riverside parks
   const bankPath = (f, off) => { for (let x = -10; x <= W + 10; x += 8) g.lineTo(x, f(x) + off); };
@@ -1499,7 +1718,7 @@ function drawMap() {
   // district labels
   g.textAlign = 'center';
   g.font = '700 13px "IBM Plex Sans KR","Apple SD Gothic Neo",sans-serif'; g.fillStyle = 'rgba(150,163,176,.32)';
-  for (const [t, x, y] of [['웨스트밀 구', 120, 212], ['노스게이트 구', 286, 112], ['센트럴 구', 296, 318], ['하버사이드 구', 74, 500], ['리버뷰 구', 222, 512], ['레이크쇼어 구', 292, 604], ['그린필드 구', 120, 700], ['아이언웍스 구', 76, 830], ['이스트우드 구', 286, 760]]) g.fillText(t, x, y);
+  [[120, 212], [286, 112], [296, 318], [74, 500], [222, 512], [292, 604], [120, 700], [76, 830], [286, 760]].forEach(([x, y], i) => g.fillText(ch.labels[i] || '', c > 1 && (c - 1) % 2 ? W - x : x, y));
   // a second expressway in the south
   g.strokeStyle = '#4b4226'; g.lineWidth = 8;
   g.beginPath(); g.moveTo(-20, 680); g.bezierCurveTo(120, 650, 220, 740, 380, 700); g.stroke();
@@ -1507,18 +1726,18 @@ function drawMap() {
   g.font = 'italic 600 12px "IBM Plex Sans KR","Apple SD Gothic Neo",sans-serif'; g.fillStyle = '#3f7894';
   g.fillText('실버라인 강', 250, (nb(250) + sb(250)) / 2 + 4);
   // route between sewer sites: completed legs solid, the rest dashed
-  const pts = STAGES.map(s => [s.x, s.y]);
+  const pts = chStages.map(s => [s.x, s.y]);
   g.lineJoin = 'round';
   g.setLineDash([5, 5]); g.strokeStyle = '#64717c'; g.lineWidth = 2.5;
   g.beginPath(); pts.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.stroke();
   g.setLineDash([]);
   for (let i = 0; i < pts.length - 1; i++) {
-    if (!isCleared(i + 1)) continue;
+    if (!isCleared(chStages[i].n)) continue;
     g.strokeStyle = 'rgba(63,225,245,.25)'; g.lineWidth = 9; g.beginPath(); g.moveTo(...pts[i]); g.lineTo(...pts[i + 1]); g.stroke();
     g.strokeStyle = '#3fe1f5'; g.lineWidth = 3.5; g.stroke();
   }
   // manhole covers under each pin
-  for (const s of STAGES) {
+  for (const s of chStages) {
     g.fillStyle = '#3a4047'; g.beginPath(); g.arc(s.x, s.y, 6.5, 0, TAU); g.fill();
     g.strokeStyle = '#5c646d'; g.lineWidth = 1; g.stroke();
     g.strokeStyle = '#2a2f35'; g.beginPath();
@@ -1602,20 +1821,35 @@ async function keepAwake() {
 const stageKind = st => st.boss === 'mid' ? '중간 보스' : st.boss === 'final' ? '최종 보스' : '일반 구역';
 function toTitle() {
   reset(1); S.state = 'title'; showOnly(ui.title); hideGameUI(); ui.title.classList.remove('go');
-  $('#titleProg').textContent = `챕터 1 · 정화 ${save.cleared.length}/10`;
+  $('#titleProg').textContent = `전체 정화 ${save.cleared.length}/100`;
 }
 function openMap(sel) {
   S.state = 'map'; showOnly(ui.map); hideGameUI();
+  const n = sel || nextStage() || 100;
+  S.mapCh = STAGES[n - 1].c;
   renderMapUI(); drawMap();
-  selectStage(sel || nextStage() || 10);
+  selectStage(n);
+  mapOff = mapOffT; blitMap();
+}
+function switchChapter(c) {
+  if (c < 1 || c > 10 || c === S.mapCh) return;
+  S.mapCh = c;
+  renderMapUI(); drawMap();
+  const inCh = STAGES.filter(st => st.c === c), nx = nextStage();
+  selectStage(inCh.some(st => st.n === nx) ? nx : inCh[0].n);
   mapOff = mapOffT; blitMap();
 }
 function renderMapUI() {
-  ui.mapProg.textContent = save.cleared.length >= 10 ? '챕터 정화 완료' : `정화 ${save.cleared.length}/10`;
-  const owned = Object.keys(UPG).filter(id => lvl(id) > 0);
+  const c = S.mapCh, ch = CHAPTERS[c - 1], done = chapCleared(c);
+  $('#chTitle').textContent = `CH.${c} ${ch.name}`;
+  $('#chSub').textContent = chapUnlocked(c) ? `오르비스 시티 · 전체 정화 ${save.cleared.length}/100` : `잠김 · 챕터 ${c - 1}의 최종 보스를 처치하면 열려요`;
+  $('#chPrev').disabled = c <= 1; $('#chNext').disabled = c >= 10;
+  ui.mapProg.textContent = done >= 10 ? '정화 완료' : `정화 ${done}/10`;
+  const owned = ownedIds();
   ui.owned.innerHTML = (owned.length
     ? owned.map(id => `<span class="chip" style="color:${CAT[UPG[id].cat].c}">${UPG[id].name} ${lvl(id)}</span>`).join('')
     : '<span class="empty">보유 강화 없음 · 구역 투입 시 1개씩 획득</span>')
+    + (save.medkit ? `<span class="chip" style="color:${CAT.def.c}">응급 백신볼 ×${save.medkit}</span>` : '')
     + '<button class="linkish" id="resetRun">처음부터</button>';
   const rb = $('#resetRun');
   rb.addEventListener('click', () => {
@@ -1624,14 +1858,14 @@ function renderMapUI() {
   });
   ui.pins.innerHTML = '';
   const nx = nextStage();
-  for (const st of STAGES) {
+  for (const st of STAGES.filter(s => s.c === c)) {
     const b = document.createElement('button');
     const state = isCleared(st.n) ? 'cleared' : st.n === nx ? 'next' : 'locked';
     b.className = `pin ${state}${st.boss ? ' ' + st.boss : ''}${st.x > 240 ? ' lab-left' : ''}`;
     b.style.left = (st.x / W * 100) + '%'; b.style.top = (st.y / H * 100) + '%';
     b.dataset.n = st.n;
-    b.setAttribute('aria-label', `1-${st.n} ${st.name}, ${state === 'cleared' ? '정화 완료' : state === 'next' ? '투입 가능' : '잠김'}`);
-    b.innerHTML = `<span class="pin-head"><b>${state === 'cleared' ? '✓' : st.n}</b></span><span class="pin-label">${st.name}${st.boss ? `<em>${stageKind(st)}</em>` : ''}</span>`;
+    b.setAttribute('aria-label', `${label(st)} ${st.name}, ${state === 'cleared' ? '정화 완료' : state === 'next' ? '투입 가능' : '잠김'}`);
+    b.innerHTML = `<span class="pin-head"><b>${state === 'cleared' ? '✓' : st.s}</b></span><span class="pin-label">${st.name}${st.boss ? `<em>${stageKind(st)}</em>` : ''}</span>`;
     b.addEventListener('click', ev => { ev.stopPropagation(); selectStage(st.n); });
     ui.pins.appendChild(b);
   }
@@ -1640,20 +1874,20 @@ function selectStage(n) {
   const st = STAGES[n - 1]; S.sel = n;
   ui.pins.querySelectorAll('.pin').forEach(p => p.classList.toggle('sel', +p.dataset.n === n));
   const kind = $('#shKind');
-  kind.textContent = `1-${n} · ${stageKind(st)}`;
+  kind.textContent = `${label(st)} · ${stageKind(st)}`;
   kind.className = 'eyebrow sh-kind' + (st.boss ? ' ' + st.boss : '');
   $('#shName').textContent = st.name;
   $('#shArea').textContent = `${st.area} · 지하 ${st.depth}m · 관로 ${st.len}m`;
-  const danger = 1 + Math.floor((n - 1) / 2);
+  const danger = 1 + Math.min(4, Math.floor(st.diff * 5));
   $('#shDots').innerHTML = Array.from({ length: 5 }, (_, i) => `<i class="${i < danger ? 'on' : ''}"></i>`).join('');
   $('#shBest').textContent = save.best[n] ? save.best[n].toLocaleString('ko-KR') : '—';
   $('#shFoes').innerHTML = st.pool.map(t => `<img src="${SPRITE_SRC[VT[t].spr[0]]}" alt="${VT[t].name}" title="${VT[t].name}">`).join('')
     + (st.boss ? `<img class="boss" src="${SPRITE_SRC.boss}" alt="${st.boss === 'final' ? '모체 바이러스' : '숙주 바이러스'}">` : '');
   const go = $('#shGo'), note = $('#shNote');
-  if (!unlocked(n)) { go.disabled = true; go.textContent = '잠김'; note.textContent = `1-${n - 1} 구역을 먼저 정화해야 열려요.`; }
+  if (!unlocked(n)) { go.disabled = true; go.textContent = '잠김'; note.textContent = `${label(STAGES[n - 2])} 구역을 먼저 정화해야 열려요.`; }
   else if (isCleared(n)) { go.disabled = false; go.textContent = '다시 투입'; note.textContent = '정화 완료 구역이에요. 강화 선택 없이 기록에 도전합니다.'; }
   else if (save.picked[n]) { go.disabled = false; go.textContent = '투입'; note.textContent = '이 구역의 강화는 이미 골랐어요. 바로 투입합니다.'; }
-  else { go.disabled = false; go.textContent = '투입'; note.textContent = '투입 전에 강화 3개 중 1개를 골라요. 강화는 챕터 끝까지 유지돼요.'; }
+  else { go.disabled = false; go.textContent = '투입'; note.textContent = '투입 전에 강화 3개 중 1개를 골라요. 강화는 계속 유지돼요.'; }
   ui.sheet.hidden = false;
   focusPin(n);
 }
@@ -1666,34 +1900,37 @@ let pickChoices = [];
 function showPick(n) {
   reset(n); S.state = 'pick'; S.pickN = n; showOnly(ui.pick); hideGameUI();
   const st = STAGES[n - 1];
-  $('#pickEyebrow').textContent = `투입 전 강화 · 1-${n} ${st.name}`;
+  $('#pickEyebrow').textContent = `투입 전 강화 · ${label(st)} ${st.name}`;
   pickChoices = rollChoices();
   const cards = $('#cards'); cards.innerHTML = '';
   pickChoices.forEach((id, i) => {
     const U = UPG[id], l = lvl(id), C = CAT[U.cat];
     const b = document.createElement('button');
     b.className = 'upcard'; b.style.setProperty('--c', C.c);
+    const lvTxt = U.extra ? '<b>1회용</b>' : `${l ? `Lv${l} → ` : ''}<b>Lv${l + 1}</b>${l + 1 >= U.max ? ' · 최대' : ''}`;
     b.innerHTML = `<span class="ic">${svgIcon(id)}</span><span class="tx"><span class="top"><span class="nm">${U.name}</span><span class="cat">${C.label}</span>`
-      + `<span class="lv">${l ? `Lv${l} → ` : ''}<b>Lv${l + 1}</b></span></span><span class="ds">${U.desc(l + 1)}</span></span>`;
+      + `<span class="lv">${lvTxt}</span></span><span class="ds">${U.desc(l + 1)}</span></span>`;
     b.addEventListener('click', () => choose(id));
     b.setAttribute('aria-keyshortcuts', String(i + 1));
     cards.appendChild(b);
   });
-  const owned = Object.keys(UPG).filter(id => lvl(id) > 0);
+  const owned = ownedIds();
   $('#pickOwned').textContent = owned.length ? '보유 · ' + owned.map(id => `${UPG[id].name} ${lvl(id)}`).join(' · ') : '첫 강화를 골라 보세요';
 }
 function choose(id) {
   if (S.state !== 'pick') return;
-  save.up[id] = lvl(id) + 1; save.picked[S.pickN] = true; persist();
+  if (UPG[id].extra) save.medkit = (save.medkit || 0) + 1; else save.up[id] = lvl(id) + 1;
+  save.picked[S.pickN] = true; persist();
   sfx('pick');
   startStage(S.pickN);
 }
 function startStage(n) {
   reset(n); for (const k in last) delete last[k];
+  if (save.medkit > 0) { save.medkit--; persist(); S.lives += 1; }
   S.state = 'play'; showOnly(null); ui.hud.hidden = false; ui.bossbar.hidden = true;
   const st = STAGES[n - 1];
-  ui.stageLab.textContent = `1-${n}`; ui.stageName.textContent = st.name;
-  $('#introNo').textContent = `1-${n} · ${stageKind(st)}`; $('#introName').textContent = st.name;
+  ui.stageLab.textContent = label(st); ui.stageName.textContent = st.name;
+  $('#introNo').textContent = `${label(st)} · ${stageKind(st)}`; $('#introName').textContent = st.name;
   banner(ui.intro);
   keepAwake();
 }
@@ -1708,18 +1945,20 @@ function stageClear() {
   if (isBest) save.best[n] = S.score;
   persist(); sfx('clear');
   pluses(player.x, player.y, 12); ring(player.x, player.y, 80, '#3fe1f5', .6);
-  $('#cEyebrow').textContent = `정화 보고서 · 1-${n}`;
-  $('#cTitle').textContent = n === 10 ? '챕터 1 정화 완료' : '정화 완료';
-  $('#cSub').textContent = n === 10 ? '실버라인 하류 구역의 모든 하수관을 정화했어요' : `${st.name} 구역의 바이러스를 소멸시켰어요`;
+  $('#cEyebrow').textContent = `정화 보고서 · ${label(st)}`;
+  $('#cTitle').textContent = n === 100 ? '오르비스 시티 정화 완료' : st.s === 10 ? `챕터 ${st.c} 정화 완료` : '정화 완료';
+  $('#cSub').textContent = n === 100 ? '도시의 모든 하수관에서 바이러스를 몰아냈어요'
+    : st.s === 10 ? `${CHAPTERS[st.c - 1].name}을 정화했어요. 챕터 ${st.c + 1}이 열렸어요`
+    : `${st.name} 구역의 바이러스를 소멸시켰어요`;
   $('#cBest').hidden = !isBest;
   $('#cScore').textContent = S.score.toLocaleString('ko-KR');
   $('#cKills').textContent = S.kills;
   $('#cCombo').textContent = S.maxCombo;
   $('#cLives').textContent = `${S.lives}/${P.maxLives}`;
   const nextBtn = $('#nextBtn');
-  nextBtn.hidden = n >= 10;
-  nextBtn.textContent = `다음 구역 · 1-${n + 1}`;
-  setTimeout(() => { if (S.state === 'clear') { showOnly(ui.clear); ui.hud.hidden = true; (n >= 10 ? $('#cMapBtn') : nextBtn).focus(); } }, 900);
+  nextBtn.hidden = n >= 100;
+  if (n < 100) nextBtn.textContent = `다음 구역 · ${label(STAGES[n])}`;
+  setTimeout(() => { if (S.state === 'clear') { showOnly(ui.clear); ui.hud.hidden = true; (n >= 100 ? $('#cMapBtn') : nextBtn).focus(); } }, 900);
 }
 function gameOver(reason) {
   if (S.state !== 'play') return;
@@ -1728,7 +1967,7 @@ function gameOver(reason) {
   ring(player.x, player.y, 90, '#3fe1f5', .6);
   shake(12); sfx('boom');
   const st = STAGES[S.stageN - 1];
-  $('#oEyebrow').textContent = `작전 보고서 · 1-${S.stageN} ${st.name}`;
+  $('#oEyebrow').textContent = `작전 보고서 · ${label(st)} ${st.name}`;
   $('#oReason').textContent = reason === 'cont' ? '하수도 오염도 100% 도달' : '백신볼이 모두 파괴되었습니다';
   $('#oScore').textContent = S.score.toLocaleString('ko-KR');
   $('#oProg').textContent = Math.floor(Math.min(1, S.bgY / S.stageLen) * 100) + '%';
@@ -1737,6 +1976,17 @@ function gameOver(reason) {
   ui.bossbar.hidden = true;
   setTimeout(() => { if (S.state === 'over') { showOnly(ui.over); ui.hud.hidden = true; $('#retryBtn').focus(); } }, 1000);
 }
+
+/* Splash: the first touch unlocks audio so the title music can play */
+const splash = $('#splashScr');
+function unlockSound() {
+  if (splash.classList.contains('out')) return;
+  initAudio();
+  splash.classList.add('out');
+  setTimeout(() => { splash.hidden = true; ui.title.focus(); }, 650);
+}
+splash.addEventListener('click', unlockSound);
+splash.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); unlockSound(); } });
 
 /* Title: tap anywhere (except the footer buttons) to start */
 $('#titleImg').src = TITLE_SRC;
@@ -1776,7 +2026,9 @@ $('#shGo').addEventListener('click', () => deploy(S.sel));
 $('#retryBtn').addEventListener('click', () => { initAudio(); startStage(S.stageN); });
 $('#homeBtn').addEventListener('click', () => openMap(S.stageN));
 $('#nextBtn').addEventListener('click', () => deploy(S.stageN + 1));
-$('#cMapBtn').addEventListener('click', () => openMap(Math.min(10, S.stageN + 1)));
+$('#cMapBtn').addEventListener('click', () => openMap(Math.min(100, S.stageN + 1)));
+$('#chPrev').addEventListener('click', () => switchChapter(S.mapCh - 1));
+$('#chNext').addEventListener('click', () => switchChapter(S.mapCh + 1));
 $('#pauseBtn').addEventListener('click', pause);
 $('#resumeBtn').addEventListener('click', resume);
 $('#quitBtn').addEventListener('click', () => openMap(S.stageN));
@@ -1832,7 +2084,7 @@ for (const k of ['grunt', 'zig', 'dart', 'split', 'charger', 'armor', 'spit', 'w
   const sp = document.createElement('span'); sp.textContent = D.note;
   li.append(img, b, sp); legend.append(li);
 }
-$('#titleProg').textContent = `챕터 1 · 정화 ${save.cleared.length}/10`;
+$('#titleProg').textContent = `전체 정화 ${save.cleared.length}/100`;
 
 let lastT = performance.now();
 function loop(now) {
