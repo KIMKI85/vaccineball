@@ -11,7 +11,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}.fill body{padding:0!important}.fill #stage{padding-block:0!important}.fill #frame{border-radius:0!important;box-shadow:none!important}</style>
+<style>:root{padding:0}body{margin:0}[hidden]{display:none!important}img{max-width:100%}html.fill,html.fill body{background:#000}.fill body{padding:0!important}.fill #stage{padding:0!important;padding-top:max(env(safe-area-inset-top,0px),var(--sat,0px))!important;padding-bottom:env(safe-area-inset-bottom,0px)!important;align-items:flex-start!important}.fill #frame{border-radius:0!important;box-shadow:none!important}</style>
+<script>try{if(navigator.standalone){addEventListener("load",function(){var p=document.createElement("div");p.style.cssText="position:fixed;top:0;height:env(safe-area-inset-top,0px);visibility:hidden";document.body.appendChild(p);setTimeout(function(){if(p.offsetHeight<1)document.documentElement.style.setProperty("--sat","20px");p.remove();},400);});}}catch(e){}</script>
 <title>백신볼 2100</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -504,9 +505,10 @@ let unit = 1;
 /* Normal mode: a 9:16 card. Full-screen mode (html.fill, used by the installed web app):
    on screens taller than 9:16 the frame fills the screen and the play field gets taller. */
 function fit() {
-  const st = stageEl.getBoundingClientRect();
+  const st = stageEl.getBoundingClientRect(), cs = getComputedStyle(stageEl);
   const fill = document.documentElement.classList.contains('fill');
-  const avH = st.height - (fill ? 0 : 24);
+  // usable height excludes the stage's own padding (status-bar letterbox on phones, 12px margins on desktop)
+  const avH = st.height - (parseFloat(cs.paddingTop) || 0) - (parseFloat(cs.paddingBottom) || 0);
   let fw, fh;
   if (fill && avH / st.width >= 16 / 9) { fw = Math.floor(st.width); fh = Math.floor(avH); }
   else { fw = Math.floor(Math.min(st.width, avH * 9 / 16)); fh = Math.floor(fw * 16 / 9); }
@@ -2429,11 +2431,28 @@ addEventListener('keyup', e => {
   if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.r = false;
 });
 document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
-addEventListener('resize', () => {
+/* Re-fit whenever the space for the game changes. Besides window resizes this catches the phone's
+   safe-area insets (status bar letterbox) arriving a moment after launch, which fires no resize event. */
+let lastBox = '';
+function relayout() {
+  const r = stageEl.getBoundingClientRect(), cs = getComputedStyle(stageEl);
+  const key = `${Math.round(r.width)}x${Math.round(r.height)}x${cs.paddingTop}x${cs.paddingBottom}`;
+  if (key === lastBox) return;
+  lastBox = key;
   fit();
   if (player) { player.y = H - 96; }
-  if (S.state === 'map') { renderMapUI(); drawMap(); selectStage(S.sel); mapOff = mapOffT; blitMap(); }
-});
+  if (S.state === 'map') {
+    const open = !ui.sheet.hidden;
+    renderMapUI(); drawMap();
+    if (open) selectStage(S.sel); else if (TUT.on) tutMap();
+    mapOff = mapOffT; blitMap();
+  }
+}
+addEventListener('resize', relayout);
+addEventListener('orientationchange', () => setTimeout(relayout, 250));
+addEventListener('pageshow', relayout);
+if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(relayout)).observe(stageEl);
+[300, 1000, 2500].forEach(ms => setTimeout(relayout, ms));
 
 /* Title legend shows the virus sprites */
 const legend = $('#legend');
