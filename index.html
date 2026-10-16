@@ -150,8 +150,12 @@ h2{font-family:var(--f-display);font-weight:400;font-size:10cqw;line-height:1.05
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .title.go .touch span{animation:none;transform:scale(1.12);transition:transform .2s}
 .title.go #titleImg{filter:brightness(1.6);transition:filter .25s}
-.title-foot{position:absolute;left:0;right:0;bottom:0;padding:3cqw 4cqw 4cqw;display:flex;justify-content:space-between;align-items:center;gap:2cqw;font-size:2.8cqw;color:#c9d6c6}
-.title-foot .linkish{color:#c9d6c6;font-size:2.8cqw}
+.title-foot{position:absolute;left:0;right:0;bottom:0;padding:3cqw 4cqw 4cqw;display:flex;white-space:nowrap;justify-content:space-between;align-items:center;gap:2cqw;font-size:2.8cqw;color:#c9d6c6}
+.title-foot .linkish{color:#c9d6c6;font-size:2.8cqw;white-space:nowrap}
+.title-foot .linkish.dev{color:#ff9aa8;text-decoration-style:dashed}
+.title-foot .linkish.dev.arm{color:#fff;background:var(--alert);border-radius:99px;padding:.6cqw 2cqw;text-decoration:none}
+.dev-toast{position:absolute;left:50%;bottom:14cqw;transform:translateX(-50%);z-index:7;padding:2cqw 4cqw;border-radius:99px;background:rgba(10,14,11,.9);
+  border:1px solid var(--alert);color:var(--ink);font-size:3cqw;white-space:nowrap;pointer-events:none;animation:fadeio 2.4s ease forwards}
 .title:focus-visible .touch span{outline:2px solid var(--hazard);outline-offset:1cqw}
 
 /* Sound-unlock splash shown once per launch, before the title */
@@ -221,6 +225,56 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
 .sh-foes img{width:8cqw;height:8cqw;object-fit:contain}
 .sh-foes img.boss{width:11cqw;height:11cqw}
 
+/* Map: chapter-reward ability button + popup */
+.owned{justify-content:space-between}
+.perk-btn{margin-left:auto;display:flex;align-items:center;gap:1.4cqw;padding:1.2cqw 2.6cqw 1.2cqw 2cqw;border-radius:99px;border:1px solid #3a3360;
+  background:rgba(24,22,40,.92);color:var(--def);font:inherit;font-size:2.8cqw;font-weight:700;cursor:pointer;box-shadow:0 1cqw 3cqw rgba(0,0,0,.45);touch-action:manipulation}
+.perk-btn svg{width:3.8cqw;height:3.8cqw}
+.perk-btn b{font-family:var(--f-data);min-width:4.4cqw;padding:.2cqw 1.2cqw;border-radius:99px;background:var(--def);color:#15122a;text-align:center}
+.perk-pop{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;padding:5cqw;background:rgba(5,8,6,.72);overflow-y:auto}
+.perk-list{list-style:none;padding:0;display:grid;gap:2cqw;max-height:52cqh;overflow-y:auto}
+.perk-list li{display:grid;grid-template-columns:10cqw 1fr;gap:3cqw;align-items:center;padding:2.4cqw;border-radius:2.4cqw;background:rgba(255,255,255,.03);border:1px solid var(--grime)}
+.perk-list li.empty{display:block;font-size:3cqw;color:var(--ink-dim);line-height:1.5}
+.perk-list .ic{width:10cqw;height:10cqw;border-radius:2.4cqw;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
+.perk-list .ic svg{width:5.6cqw;height:5.6cqw}
+.perk-list .tx{display:grid;gap:.6cqw;min-width:0}
+.perk-list .top{display:flex;gap:2cqw;align-items:baseline;flex-wrap:wrap}
+.perk-list b{font-size:3.4cqw}
+.perk-list .cat{font-size:2.2cqw;font-weight:700;color:var(--c);letter-spacing:.08em}
+.perk-list .lv{margin-left:auto;font-family:var(--f-data);font-size:2.7cqw;color:var(--c)}
+.perk-list .ds{font-size:2.8cqw;color:var(--ink-dim)}
+
+/* Floating left/right pad shown under the finger */
+#stick{position:absolute;left:0;top:0;width:46cqw;height:15cqw;margin:-7.5cqw 0 0 -23cqw;z-index:4;pointer-events:none;
+  display:flex;align-items:center;justify-content:space-between;padding:0 3.4cqw;border-radius:99px;
+  background:rgba(200,240,255,.07);border:1px solid rgba(200,240,255,.25);box-shadow:inset 0 0 4cqw rgba(0,0,0,.35);opacity:0;transition:opacity .18s}
+#stick.on{opacity:1}
+#stick .arr{font-size:3.8cqw;color:rgba(220,240,255,.35);transition:color .1s,transform .1s,text-shadow .1s}
+#stick .arr.act{color:var(--vaccine);transform:scale(1.3);text-shadow:0 0 2cqw rgba(63,225,245,.9)}
+#stick .knob{position:absolute;left:50%;top:50%;width:11cqw;height:11cqw;margin:-5.5cqw 0 0 -5.5cqw;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,rgba(255,255,255,.35),rgba(63,225,245,.18) 60%);border:2px solid rgba(200,250,255,.65);box-shadow:0 0 3cqw rgba(63,225,245,.35)}
+
+/* Tutorial coach: dim the screen except the highlighted target, speech bubble with the step text */
+.coach{position:absolute;inset:0;z-index:8;pointer-events:none}
+.coach-hole{position:absolute;border-radius:3cqw;box-shadow:0 0 0 300cqh rgba(2,5,4,.62);outline:2px solid var(--vaccine);outline-offset:1cqw;animation:holePulse 1.2s ease-in-out infinite alternate;transition:all .25s ease}
+@keyframes holePulse{to{outline-offset:2.4cqw;outline-color:rgba(63,225,245,.35)}}
+.coach-bubble{position:absolute;left:5cqw;right:5cqw;padding:3.6cqw 4.4cqw 3cqw;border-radius:3cqw;background:#0f1e22;border:1px solid var(--vaccine-deep);
+  box-shadow:0 2cqw 6cqw rgba(0,0,0,.6);display:grid;gap:1.6cqw;pointer-events:auto}
+.coach-bubble.top{top:6cqh}
+.coach-bubble.mid{top:40cqh}
+.coach-bubble.bottom{bottom:5cqh}
+.coach-step{font-family:var(--f-data);font-size:2.6cqw;letter-spacing:.14em;color:var(--vaccine)}
+.coach-text{font-size:3.6cqw;line-height:1.55;color:var(--ink)}
+.coach-text b{color:var(--hazard)}
+.coach-skip{justify-self:end;background:none;border:0;color:var(--ink-dim);font:inherit;font-size:2.7cqw;text-decoration:underline;text-underline-offset:.6cqw;cursor:pointer;padding:1cqw 0}
+.coach-demo{position:relative;justify-self:center;width:46cqw;height:12cqw;border-radius:99px;border:1px solid rgba(200,240,255,.3);background:rgba(200,240,255,.06);
+  display:flex;align-items:center;justify-content:space-between;padding:0 3cqw;margin-block:1cqw}
+.coach-demo .arr{font-size:3.4cqw;color:var(--vaccine)}
+.coach-demo .dot{position:absolute;left:50%;top:50%;width:9cqw;height:9cqw;margin:-4.5cqw 0 0 -4.5cqw;border-radius:50%;
+  background:rgba(63,225,245,.25);border:2px solid rgba(200,250,255,.8);animation:demoSwipe 1.6s ease-in-out infinite}
+@keyframes demoSwipe{0%,100%{transform:translateX(-13cqw)}50%{transform:translateX(13cqw)}}
+@media (prefers-reduced-motion: reduce){.coach-hole,.coach-demo .dot{animation:none}}
+
 /* Upgrade pick */
 .pick{width:100%;display:grid;gap:3.4cqw}
 .cards{display:grid;gap:2.8cqw}
@@ -269,6 +323,7 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
     </div>
 
     <div class="banner" id="warn"><span id="warnTitle">경고 · 숙주 바이러스 접근</span><small>HOST VIRUS DETECTED</small></div>
+    <div id="stick" aria-hidden="true"><span class="arr l">◀</span><span class="knob"></span><span class="arr r">▶</span></div>
     <div class="banner" id="intro"><b id="introNo">1-1</b><span id="introName"></span><small>투입 개시</small></div>
 
     <section class="full title" id="titleScr" role="button" tabindex="0" aria-label="백신볼, 화면을 터치해서 시작">
@@ -277,7 +332,7 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
       <div class="touch" id="touch"><span>터치 스타트</span><small>TOUCH TO START</small></div>
       <div class="title-foot">
         <span id="titleProg">전체 정화 0/100</span>
-        <span class="toggles"><button class="linkish" id="briefBtn">작전 브리핑</button><button class="linkish" data-bgm>배경음 켜짐</button><button class="linkish" data-sound>효과음 켜짐</button></span>
+        <span class="toggles"><button class="linkish dev" id="devReset" hidden>DEV 초기화</button><button class="linkish" id="briefBtn">작전 브리핑</button><button class="linkish" data-bgm>배경음 켜짐</button><button class="linkish" data-sound>효과음 켜짐</button></span>
       </div>
     </section>
 
@@ -300,7 +355,8 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
           <dl class="howto">
             <dt>이동</dt><dd>화면 좌우 드래그 · ← → 키</dd>
             <dt>공격</dt><dd>항체탄 자동 발사</dd>
-            <dt>성장</dt><dd>구역마다 강화 1개를 골라 끝까지 쌓아 갑니다 · 10개 챕터, 100개 구역</dd>
+            <dt>성장</dt><dd>투입할 때 강화 1개, 점수 3,000 · 6,000 · 9,000마다 1개씩 더 골라요. 구역이 끝나면 초기화돼요</dd>
+            <dt>보상</dt><dd>챕터를 정화하면 능력 3개를 골라 다음 챕터부터 계속 가져가요</dd>
           </dl>
           <div class="actions">
             <button class="btn ghost" id="briefClose">닫기</button>
@@ -322,6 +378,18 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
         </div>
         <div class="owned" id="owned"></div>
       </div>
+      <div class="perk-pop" id="perkPop" role="dialog" aria-modal="true" aria-labelledby="perkTitle" hidden>
+        <div class="card">
+          <div class="stripe ok"></div>
+          <div class="card-body">
+            <p class="eyebrow">챕터 정화 보상</p>
+            <h2 id="perkTitle">보유 능력</h2>
+            <p class="note">챕터를 정화할 때마다 3개씩 골라 가져가요. 모든 구역 시작 시 자동으로 적용되고, 구역 안에서 고른 강화와 합쳐져요.</p>
+            <ul class="perk-list" id="perkList"></ul>
+            <button class="btn ghost" id="perkClose">닫기</button>
+          </div>
+        </div>
+      </div>
       <div class="sheet" id="sheet" hidden>
         <div class="grab"></div>
         <div class="sheet-head">
@@ -342,7 +410,7 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
     <section class="screen" id="pickScr" hidden>
       <div class="pick">
         <p class="eyebrow" id="pickEyebrow">투입 전 강화 · 1-1</p>
-        <h2>강화 하나를 고르세요</h2>
+        <h2 id="pickTitle">강화 하나를 고르세요</h2>
         <div class="cards" id="cards"></div>
         <p class="owned-line" id="pickOwned"></p>
       </div>
@@ -355,6 +423,7 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
           <p class="eyebrow">작전 대기</p>
           <h2>일시정지</h2>
           <div class="actions">
+            <p class="note" id="pauseUps"></p>
             <button class="btn" id="resumeBtn">계속 진행</button>
             <button class="btn ghost" id="quitBtn">지도로 돌아가기</button>
           </div>
@@ -376,7 +445,7 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
             <div><dt>소멸 바이러스</dt><dd id="oKills">0</dd></div>
             <div><dt>최대 콤보</dt><dd id="oCombo">0</dd></div>
           </dl>
-          <p class="note">강화는 그대로 유지한 채 다시 도전할 수 있어요.</p>
+          <p class="note">재도전하면 강화를 처음부터 다시 골라요. 챕터 보상 능력은 그대로 적용돼요.</p>
           <div class="actions">
             <button class="btn" id="retryBtn">재도전</button>
             <button class="btn ghost" id="homeBtn">지도로</button>
@@ -394,10 +463,10 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
           <p class="sub-ok" id="cSub"></p>
           <span class="badge" id="cBest" hidden>구역 최고 기록</span>
           <dl class="report">
-            <div><dt>점수</dt><dd id="cScore">0</dd></div>
+            <div><dt>점수 · 기준 12,000</dt><dd id="cScore">0</dd></div>
             <div><dt>소멸 바이러스</dt><dd id="cKills">0</dd></div>
             <div><dt>최대 콤보</dt><dd id="cCombo">0</dd></div>
-            <div><dt>남은 백신볼</dt><dd id="cLives">0</dd></div>
+            <div><dt>획득 강화</dt><dd id="cLives">0</dd></div>
           </dl>
           <div class="actions">
             <button class="btn" id="nextBtn">다음 구역</button>
@@ -406,6 +475,15 @@ h3{font-family:var(--f-display);font-weight:400;font-size:7.4cqw;line-height:1.1
         </div>
       </div>
     </section>
+    <div class="coach" id="coach" hidden>
+      <div class="coach-hole" id="coachHole" hidden></div>
+      <div class="coach-bubble" id="coachBubble" role="status" aria-live="polite">
+        <p class="coach-step" id="coachStep">튜토리얼 1/4</p>
+        <p class="coach-text" id="coachText"></p>
+        <div class="coach-demo" id="coachDemo" hidden><span class="arr">◀</span><span class="dot"></span><span class="arr">▶</span></div>
+        <button class="coach-skip" id="coachSkip">튜토리얼 건너뛰기</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -500,7 +578,7 @@ CHAPTERS.forEach((ch, ci) => {
       name: ch.names ? ch.names[s - 1] : s === 10 ? ch.final : `${ch.marks[s - 1]} ${SUFFIX[s - 1]}`,
       area: ch.areas ? ch.areas[s - 1] : `${ch.district} 구 ${ch.marks[s - 1] || ''}${s === 5 ? ' 저류시설' : s === 10 ? ' 최종 처리 구역' : ' 일대'}`.replace('  ', ' '),
       depth: Math.round(8 + diff * 34 + (boss ? 6 : 0) + s * .4),
-      len: Math.round(300 + diff * 170 + (s - 1) * 5 - (boss ? 40 : 0)),
+      len: boss ? 450 : 400,
       pool: ORDER.filter(t => UNLOCK[t] <= n),
     });
   }
@@ -509,10 +587,20 @@ const label = st => `${st.c}-${st.s}`;
 
 /* Progress persists per device (same key as before, so chapter 1 progress carries over) */
 const SAVE_KEY = 'vaccineball2100.ch1';
-const freshSave = () => ({ cleared: [], up: {}, picked: {}, best: {}, medkit: 0 });
-let save = freshSave();
-try { const raw = localStorage.getItem(SAVE_KEY); if (raw) save = Object.assign(freshSave(), JSON.parse(raw)); } catch (e) {}
+const freshSave = () => ({ ver: 2, cleared: [], perm: {}, pendingPerks: 0, best: {} });
+// one-time wipe (requested 2026-10-16 to replay the tutorial): runs once per device, then never again
+const RESET_ID = '2026-10-16-tutorial';
+try { if (localStorage.getItem('vaccineball2100.reset') !== RESET_ID) { localStorage.removeItem(SAVE_KEY); localStorage.setItem('vaccineball2100.reset', RESET_ID); } } catch (e) {}
+let save = freshSave(), loaded = null;
+try { const raw = localStorage.getItem(SAVE_KEY); if (raw) loaded = JSON.parse(raw); } catch (e) {}
 function persist() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {} }
+if (loaded && loaded.ver === 2) save = Object.assign(freshSave(), loaded);
+else if (loaded) {
+  // old saves: per-stage upgrades are gone; every chapter already cleared owes 3 chapter-reward picks
+  const cleared = Array.isArray(loaded.cleared) ? loaded.cleared : [];
+  save = { ver: 2, cleared, perm: {}, best: loaded.best || {}, pendingPerks: cleared.filter(n => n % 10 === 0 && n < 100).length * 3 };
+  persist();
+}
 const isCleared = n => save.cleared.includes(n);
 const unlocked = n => n === 1 || isCleared(n - 1);
 const chapUnlocked = c => c === 1 || isCleared((c - 1) * 10);
@@ -523,19 +611,18 @@ function nextStage() { for (let n = 1; n <= 100; n++) if (!isCleared(n)) return 
 const CAT = { atk: { label: '공격', c: '#3fe1f5' }, def: { label: '방어', c: '#b3a8ff' }, sup: { label: '지원', c: '#f2b632' } };
 const HOM_INT = [0, 2.6, 2.2, 1.85, 1.55, 1.3, 1.1];
 const UPG = {
-  rapid:  { name:'연사 강화',   cat:'atk', max:10, desc:l => `발사 속도 +${8 * l}%` },
-  power:  { name:'항체 증폭',   cat:'atk', max:10, desc:l => `항체탄 피해 +${12 * l}%` },
-  spread: { name:'확산 사출구', cat:'atk', max:2,  desc:l => `항체탄 ${1 + 2 * l}갈래 발사 · 측면탄 피해 ${l === 1 ? 60 : 70}%` },
-  pierce: { name:'관통 항체',   cat:'atk', max:3,  desc:l => `항체탄이 적을 ${l}마리 더 관통` },
-  homing: { name:'추적 나노봇', cat:'atk', max:6,  desc:l => `${HOM_INT[l]}초마다 가까운 적을 쫓는 추적탄 ${l >= 4 ? 2 : 1}발` },
-  orbit:  { name:'궤도 항체구', cat:'atk', max:4,  desc:l => `항체구 ${l}개가 주위를 돌며 공격·포자 차단` },
-  chain:  { name:'연쇄 정화',   cat:'atk', max:4,  desc:l => `처치한 자리에서 반경 ${30 + 10 * l} 정화 폭발` },
-  crit:   { name:'급소 타격',   cat:'atk', max:8,  desc:l => `${5 * l}% 확률로 2배 피해` },
-  hull:   { name:'외피 보강',   cat:'def', max:3,  desc:l => `백신볼 최대 ${3 + l}개` },
-  shield: { name:'항체 보호막', cat:'def', max:2,  desc:l => l === 1 ? '구역 시작 시 보호막 1회' : '보호막이 24초마다 재생성' },
-  filter: { name:'정화 필터',   cat:'sup', max:4,  desc:l => `놓친 바이러스 오염 -${12 * l}%` },
-  supply: { name:'보급 요청',   cat:'sup', max:4,  desc:l => `보급 아이템 확률 +${30 * l}%` },
-  medkit: { name:'응급 백신볼', cat:'def', max:Infinity, extra:true, desc:() => '다음 구역에서만 백신볼 +1' },
+  rapid:  { name:'연사 강화',   tier:4, cat:'atk', max:10, desc:l => `발사 속도 +${8 * l}%` },
+  power:  { name:'항체 증폭',   tier:3, cat:'atk', max:10, desc:l => `항체탄 피해 +${12 * l}%` },
+  spread: { name:'확산 사출구', tier:1, cat:'atk', max:2,  desc:l => `항체탄 ${1 + 2 * l}갈래 발사 · 측면탄 피해 ${l === 1 ? 60 : 70}%` },
+  pierce: { name:'관통 항체',   tier:3, cat:'atk', max:3,  desc:l => `항체탄이 적을 ${l}마리 더 관통` },
+  homing: { name:'추적 나노봇', tier:3, cat:'atk', max:6,  desc:l => `${HOM_INT[l]}초마다 가까운 적을 쫓는 추적탄 ${l >= 4 ? 2 : 1}발` },
+  orbit:  { name:'궤도 항체구', tier:3, cat:'atk', max:4,  desc:l => `항체구 ${l}개가 주위를 돌며 공격·포자 차단` },
+  chain:  { name:'연쇄 정화',   tier:2, cat:'atk', max:4,  desc:l => `처치한 자리에서 반경 ${30 + 10 * l} 정화 폭발` },
+  crit:   { name:'급소 타격',   tier:5, cat:'atk', max:8,  desc:l => `${5 * l}% 확률로 2배 피해` },
+  hull:   { name:'외피 보강',   tier:2, cat:'def', max:3,  desc:l => `백신볼 최대 ${3 + l}개` },
+  shield: { name:'항체 보호막', tier:2, cat:'def', max:2,  desc:l => l === 1 ? '구역 시작 시 보호막 1회' : '보호막이 24초마다 재생성' },
+  filter: { name:'정화 필터',   tier:4, cat:'sup', max:4,  desc:l => `놓친 바이러스 오염 -${12 * l}%` },
+  medkit: { name:'응급 백신볼', cat:'def', max:Infinity, extra:true, desc:() => '백신볼 1개 즉시 회복' },
 };
 const ICON = {
   rapid: '<path d="M6 20V9M12 20V4M18 20V9"/>',
@@ -549,11 +636,12 @@ const ICON = {
   hull: '<circle cx="12" cy="12" r="8"/><path d="M12 9v6M9 12h6"/>',
   shield: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>',
   filter: '<path d="M3 4h18l-7 8v7l-4 2v-9z"/>',
-  supply: '<rect x="4" y="8" width="16" height="12" rx="2"/><path d="M4 12h16M12 8v12M8 8V5h8v3"/>',
   medkit: '<rect x="3" y="8" width="18" height="8" rx="4"/><path d="M12 10v4M10 12h4"/>',
 };
 const svgIcon = id => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[id]}</svg>`;
-const lvl = id => save.up[id] || 0;
+// effective level = chapter-reward level (kept) + this stage's picks (reset when the stage ends)
+const permLvl = id => save.perm[id] || 0;
+const lvl = id => permLvl(id) + ((S.up && S.up[id]) || 0);
 function stats() {
   const spread = lvl('spread'), homing = lvl('homing'), chain = lvl('chain');
   return {
@@ -567,18 +655,39 @@ function stats() {
     chain, chainR: 30 + 10 * chain, chainDmg: .5 + .15 * chain,
     crit: .05 * lvl('crit'),
     contMul: 1 - .12 * lvl('filter'),
-    dropMul: 1 + .3 * lvl('supply'),
     shield: lvl('shield'),
   };
 }
-function rollChoices() {
-  const ids = Object.keys(UPG).filter(id => !UPG[id].extra && lvl(id) < UPG[id].max);
+/* Tier 1–2 abilities (spread, hull, shield, chain) only show up from chapter 3.
+   chap = the chapter the pick is for: the stage's chapter, or for chapter rewards the chapter being entered next. */
+const TIER_GATE_CH = 3;
+const tierOpen = (id, chap) => (UPG[id].tier || 5) > 2 || chap >= TIER_GATE_CH;
+function rollChoices(mode, chap) {
+  const ids = Object.keys(UPG).filter(id => !UPG[id].extra && lvl(id) < UPG[id].max && tierOpen(id, chap));
   for (let i = ids.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [ids[i], ids[j]] = [ids[j], ids[i]]; }
   const out = ids.slice(0, 3);
-  if (out.length < 3) out.push('medkit');
+  if (out.length < 3 && mode !== 'perk') out.push('medkit');
   return out;
 }
 const ownedIds = () => Object.keys(UPG).filter(id => !UPG[id].extra && lvl(id) > 0);
+const permIds = () => Object.keys(UPG).filter(id => !UPG[id].extra && permLvl(id) > 0);
+
+/* Score: every stage is tuned so killing everything is worth about 12,000.
+   The spawn schedule is estimated from the same numbers spawnWave() uses, and each virus's points are scaled to fit. */
+const STAGE_TARGET = 12000, THRESH = [3000, 6000, 9000];
+function scoreScale(st) {
+  const k = st.diff, dur = st.len * 10 * LEN_SCALE / (58 + k * 34);
+  let ws = 0, sc = 0;
+  for (const t of st.pool) {
+    const w = WEIGHT[t] * (UNLOCK[t] > 1 && st.n - UNLOCK[t] < 3 ? 1.7 : 1);
+    ws += w; sc += w * (VT[t].score + (t === 'split' ? 2 * VT.mini.score : 0));
+  }
+  const waveP = st.n >= 3 ? .08 + k * .12 : 0;
+  const perSpawn = waveP * 5 * VT.grunt.score + (1 - waveP) * (sc / ws) * (1 + k * .45);
+  const spawns = Math.max(1, (dur - 1.4) / (1.3 - k * .85));
+  const bossPts = st.boss === 'final' ? 3000 : st.boss === 'mid' ? 2000 : 0;
+  return { mul: 1.05 * (STAGE_TARGET - bossPts) / (spawns * perSpawn), bossPts };   // 1.05: measured kill potential runs ~5% under the estimate
+}
 
 /* ---------- Sewer track: channel center and width vary along its length ---------- */
 const K = 2, BW = 132, BH = 96, LW = 64, WT = 256, LEDGE = 30;
@@ -679,12 +788,15 @@ const keys = { l: false, r: false };
 
 function reset(n) {
   const st = STAGES[n - 1];
+  S.up = {};
   P = stats();
+  const sc = scoreScale(st);
   // st.diff runs 0 (1-1) → 1 (10-10); every difficulty knob below is driven by it
   Object.assign(S, { stageN: n, st, k: st.diff, chap: st.c, pool: st.pool, stageLen: st.len * 10 * LEN_SCALE, bossKind: st.boss || null,
     baseScroll: 58 + st.diff * 34, hpMul: 1 + st.diff * 2.4, spdMul: 1 + st.diff * .5,
     score: 0, kills: 0, combo: 0, comboT: 0, maxCombo: 0, cont: 0, lives: P.maxLives, shake: 0, hurt: 0, boss: null, bossDown: false,
-    ending: false, clearT: 0, spawnT: 1.4, fireT: 0, homT: 1, orbA: 0, shieldT: 0, spread: 0, shield: P.shield >= 1, bgY: 0, chainQ: [] });
+    ending: false, clearT: 0, spawnT: 1.4, fireT: 0, homT: 1, orbA: 0, shieldT: 0, shield: P.shield >= 1, bgY: 0, chainQ: [],
+    scoreMul: sc.mul, bossPts: sc.bossPts, picks: 0, nextTh: 0, pendingPick: 0, pot: 0 });
   trackReset(); trackExtend(H + 400);
   player = { x: W / 2, y: H - 96, tx: W / 2, r: 16, vx: 0, inv: 0 };
   bullets = []; missiles = []; enemies = []; spores = []; items = []; parts = []; texts = [];
@@ -734,7 +846,7 @@ const MEL_T = [null, null, null, null, 81, null, 79, null, 77, null, null, null,
 const CH_M = [[48, 60, 64, 67], [40, 55, 59, 64], [41, 57, 60, 65], [43, 55, 59, 62]];                   // C · Em · F · G
 const MEL_M = [[76, null, null, null, 79, null, 77, null], [76, null, null, null, 71, null, 74, null], [72, null, null, null, 77, null, 76, null], [74, null, null, null, null, null, 71, null]];
 const STEP_LEN = { title: .5, map: .26 };
-function bgmMode() { const s = S.state; return s === 'title' || s === 'brief' ? 'title' : s === 'map' ? 'map' : 'game'; }
+function bgmMode() { const s = S.state; return s === 'title' || s === 'brief' ? 'title' : s === 'map' || s === 'perk' ? 'map' : 'game'; }
 function bgmStart() {
   if (!actx || BGM.started) return;
   BGM.started = true;
@@ -891,6 +1003,7 @@ function spawnEnemy(type, x, y) {
     vy: rand(D.vy[0], D.vy[1]) * S.spdMul, spin: Math.random() < .5 ? -1 : 1, cd: rand(1, 2.2), orbCd: 0 };
   e.lane = x == null ? rand(-.85, .85) : laneOf(x, e.y, e.r);
   e.spr = D.spr[Math.random() * D.spr.length | 0];
+  S.pot += Math.max(10, Math.round(D.score * S.scoreMul / 10) * 10);
   if (type === 'zig') { e.amp = rand(.25, .45); e.freq = rand(2.4, 3.4); e.bl = clamp(e.lane, -1 + e.amp, 1 - e.amp); }
   if (type === 'dart') e.vl = (Math.random() < .5 ? -1 : 1) * rand(.8, 1.3);
   if (type === 'charger') { e.phase = 'down'; e.stopY = rand(140, 260); }
@@ -947,7 +1060,6 @@ function shake(v) { if (!reduceMotion) S.shake = Math.max(S.shake, v); }
 function banner(el) { el.classList.remove('show'); void el.offsetWidth; el.classList.add('show'); }
 
 /* ---------- Combat ---------- */
-function mult() { return 1 + Math.min(3, Math.floor(S.combo / 5) * .5); }
 function damage(e, amt) {
   if (e.dead) return;
   if (P.crit && Math.random() < P.crit) { amt *= 2; burst(e.x, e.y, ['#ffe27a', '#ffffff'], 4, 120, .8); }
@@ -959,7 +1071,7 @@ function kill(e) {
   e.dead = true;
   const D = VT[e.type];
   if (e.type === 'boss') {
-    const pts = e.final ? 10000 : 4000;
+    const pts = S.bossPts;
     S.score += pts; S.kills++;
     burst(e.x, e.y, [...D.cols, '#ffffff'], 80, 280, 1.7);
     ring(e.x, e.y, 150, D.cols[1], .6); ring(e.x, e.y, 95, '#3fe1f5', .5);
@@ -973,7 +1085,7 @@ function kill(e) {
     return;
   }
   S.kills++; S.combo++; S.comboT = 1.5; S.maxCombo = Math.max(S.maxCombo, S.combo);
-  const pts = Math.round(D.score * mult());
+  const pts = Math.max(10, Math.round(D.score * S.scoreMul / 10) * 10);
   S.score += pts; S.cont = Math.max(0, S.cont - .6);
   burst(e.x, e.y, D.cols, 12 + e.r, 150);
   ring(e.x, e.y, e.r * 2.4, D.cols[1]);
@@ -984,8 +1096,6 @@ function kill(e) {
     spawnEnemy('mini', e.x + 8, e.y).vl = .7;
   }
   if (P.chain) S.chainQ.push({ x: e.x, y: e.y, r: P.chainR, dmg: P.dmg * P.chainDmg });
-  const chance = ((e.type === 'armor' || e.type === 'worm') ? .3 : e.type === 'mini' ? .03 : .07) * P.dropMul;
-  if (Math.random() < chance) dropItem(e.x, e.y);
   shake(e.type === 'armor' || e.type === 'worm' ? 5 : 2.5);
   sfx('pop');
 }
@@ -1043,7 +1153,7 @@ function updateAmbient(dt) {
 function movePlayer(dt) {
   const kd = (keys.r ? 1 : 0) - (keys.l ? 1 : 0);
   const tk = track(S.bgY - player.y), lo = tk.c - tk.hw - 20, hi = tk.c + tk.hw + 20;
-  if (kd) player.tx += kd * 300 * dt;
+  if (kd) { player.tx += kd * 300 * dt; if (TUT.on) tutMoved(300 * dt); }
   player.tx = clamp(player.tx, lo, hi);
   const px = player.x;
   player.x = clamp(player.x + (player.tx - player.x) * Math.min(1, dt * 16), lo, hi);
@@ -1093,7 +1203,7 @@ function updateBoss(e, dt) {
   }
 }
 function update(dt) {
-  if (S.state === 'pause' || S.state === 'map') return;
+  if (S.state === 'pause' || S.state === 'map' || S.state === 'levelup' || S.state === 'perk') return;
   S.t += dt;
   const target = S.boss ? 24 : S.baseScroll;
   S.scroll += (target - S.scroll) * Math.min(1, dt * 2);
@@ -1111,7 +1221,6 @@ function update(dt) {
 
   movePlayer(dt);
   player.inv = Math.max(0, player.inv - dt);
-  S.spread = Math.max(0, S.spread - dt);
   if (S.comboT > 0) { S.comboT -= dt; if (S.comboT <= 0) S.combo = 0; }
   if (P.shield >= 2 && !S.shield) {
     S.shieldT += dt;
@@ -1125,12 +1234,17 @@ function update(dt) {
   }
   if (S.ending && !S.bossKind) { S.clearT += dt; if ((enemies.length === 0 && S.clearT > 1) || S.clearT > 6) { stageClear(); return; } }
   if (S.bossDown) { S.clearT += dt; if (S.clearT > 2) { stageClear(); return; } }
+  while (S.nextTh < THRESH.length && S.score >= THRESH[S.nextTh]) {
+    S.nextTh++;
+    if (!S.bossDown && !(S.ending && !S.bossKind)) S.pendingPick++;   // no point picking once the stage is wrapping up
+  }
+  if (S.pendingPick > 0) { showLevelUp(); return; }
 
   // antibody shots
   S.fireT -= dt;
   if (S.fireT <= 0) {
     S.fireT = P.fireInt;
-    const n = 1 + 2 * P.spread + (S.spread > 0 ? 2 : 0);
+    const n = 1 + 2 * P.spread;
     for (let i = 0; i < n; i++) {
       const off = i - (n - 1) / 2, a = off * .13;
       bullets.push({ x: player.x + Math.sin(a) * 8, y: player.y - player.r, vx: Math.sin(a) * 560, vy: -Math.cos(a) * 560, dmg: P.dmg * (off ? P.sideMul : 1), pierce: P.pierce, hits: [] });
@@ -1144,8 +1258,9 @@ function update(dt) {
     }
   }
 
-  // spawn
-  if (!S.ending) {
+  // spawn (held back during the movement lesson; the stage length grows so no distance is lost)
+  if (TUT.on && TUT.step === 'move') S.stageLen += S.scroll * dt;
+  else if (!S.ending) {
     S.spawnT -= dt;
     if (S.spawnT <= 0) { spawnWave(); S.spawnT = (1.3 - S.k * .85) * rand(.75, 1.25); }
   }
@@ -1431,6 +1546,83 @@ const hash = n => { n = (n ^ 61) ^ (n >>> 16); n = n + (n << 3); n = n ^ (n >>> 
 const FACE_COLS = {};
 for (const k of [-1, 1]) for (let b = 0; b < 4; b++) for (let j = 0; j < NC; j++)
   FACE_COLS[`${k}${b}${j}`] = `hsl(${24 + b * 4} ${16 + b * 3}% ${6 + b * 1.5 + j * 2.4 - (k > 0 ? 1.2 : 0)}%)`;
+/* Outlet pipe: dark rusty ring in the wall face, murky water pouring out in an arc and crashing into the channel
+   (translucent body, fast flow streaks, small falling drops, foam, spray and ripples where it lands) */
+function slimeAt(x0, y0, cx, cy, x1, y1, u) {
+  const v = 1 - u;
+  return [v * v * x0 + 2 * v * u * cx + u * u * x1, v * v * y0 + 2 * v * u * cy + u * u * y1];
+}
+function drawOutlet(g, T, t, d, y, ang) {
+  const sd = d.side, x = t.c + sd * (t.hw + LEDGE + FACE * .45), ph = d.u * .013;
+  const x0 = x - sd * 4, y0 = y + 3, x1 = t.c + sd * (t.hw - 12), y1 = y + 24, cx = x - sd * 30, cy = y - 1;
+  const N = 16, L = [], Rr = [], C = [];
+  for (let k = 0; k <= N; k++) {
+    const u = k / N, [px, py] = slimeAt(x0, y0, cx, cy, x1, y1, u);
+    const [qx, qy] = slimeAt(x0, y0, cx, cy, x1, y1, Math.min(1, u + .02));
+    let nx = -(qy - py), ny = qx - px; const m = Math.hypot(nx, ny) || 1; nx /= m; ny /= m;
+    const wob = Math.sin(T * 13 + u * 14 + ph * 20) * .6 * u;
+    const w = 3.8 + u * 2.4 + Math.sin(T * 11 + u * 19 + ph) * .35;   // water fans out as it falls
+    C.push([px + nx * wob, py + ny * wob]);
+    L.push([px + nx * (wob + w), py + ny * (wob + w)]);
+    Rr.push([px + nx * (wob - w), py + ny * (wob - w)]);
+  }
+  const path = pts => { g.beginPath(); pts.forEach(([a, b], k) => k ? g.lineTo(a, b) : g.moveTo(a, b)); };
+  g.save();
+  // pipe stub + dark rusty ring
+  g.save(); g.translate(x, y); g.rotate(ang);
+  g.fillStyle = '#271a0e'; g.beginPath(); g.roundRect ? g.roundRect(sd > 0 ? 0 : -16, -10, 16, 20, 3) : g.rect(sd > 0 ? 0 : -16, -10, 16, 20); g.fill();
+  g.strokeStyle = '#050403'; g.lineWidth = 1.4; g.stroke();
+  const rg = g.createLinearGradient(-9, -13, 9, 13);
+  rg.addColorStop(0, '#5e4226'); rg.addColorStop(.5, '#3b2512'); rg.addColorStop(1, '#22150a');
+  g.fillStyle = rg; g.beginPath(); g.ellipse(0, 0, 9.5, 14, 0, 0, TAU); g.fill();
+  g.fillStyle = '#461d0a';
+  for (const [rx, ry, rs] of [[-5, -8, 2.2], [4, -10, 1.6], [6, 4, 2.4], [-6, 7, 1.8], [1, 11, 1.4]]) { g.beginPath(); g.arc(rx, ry, rs, 0, TAU); g.fill(); }
+  g.strokeStyle = '#050403'; g.lineWidth = 1.6; g.beginPath(); g.ellipse(0, 0, 9.5, 14, 0, 0, TAU); g.stroke();
+  g.strokeStyle = 'rgba(255,214,140,.14)'; g.lineWidth = 1; g.beginPath(); g.ellipse(0, 0, 8.4, 12.9, 0, Math.PI * 1.05, Math.PI * 1.55); g.stroke();
+  g.fillStyle = '#010201'; g.beginPath(); g.ellipse(-sd * 1.2, 0, 6, 9.6, 0, 0, TAU); g.fill();
+  g.fillStyle = 'rgba(70,92,48,.8)'; g.beginPath(); g.ellipse(-sd * 1.2, 4.5, 5, 3.2, 0, 0, Math.PI); g.fill();
+  g.restore();
+  // water body: translucent murky green, no heavy outline
+  g.beginPath(); L.forEach(([a, b], k) => k ? g.lineTo(a, b) : g.moveTo(a, b)); for (let k = N; k >= 0; k--) g.lineTo(Rr[k][0], Rr[k][1]); g.closePath();
+  const wg = g.createLinearGradient(x0, y0 - 6, x0, y1 + 6);
+  wg.addColorStop(0, 'rgba(72,96,50,.82)'); wg.addColorStop(1, 'rgba(40,60,30,.72)');
+  g.fillStyle = wg; g.fill();
+  g.strokeStyle = 'rgba(8,16,5,.45)'; g.lineWidth = .8; g.stroke();
+  // fast flow streaks running along the stream
+  g.lineCap = 'round';
+  for (const [off, a, dash, spd] of [[-.45, .26, [7, 9], 95], [.1, .2, [4, 11], 120], [.5, .16, [9, 7], 80]]) {
+    const pts = C.map(([px, py], k) => [px + (L[k][0] - px) * off, py + (L[k][1] - py) * off]);
+    g.setLineDash(dash); g.lineDashOffset = -(T * spd + ph * 40);
+    g.strokeStyle = `rgba(160,182,128,${a})`; g.lineWidth = .9;
+    path(pts); g.stroke();
+  }
+  g.setLineDash([]);
+  g.strokeStyle = 'rgba(165,185,130,.18)'; g.lineWidth = .8; path(L.slice(1, N - 2).map(([a, b]) => [a, b + .7])); g.stroke();
+  // a few drops shed from the underside, falling fast
+  for (let q = 0; q < 4; q++) {
+    const pp = ((T * 2.2 + q * .29 + ph) % 1 + 1) % 1, k = 3 + q * 3, [a, b] = Rr[k];
+    g.fillStyle = `rgba(80,104,58,${.7 * (1 - pp)})`;
+    g.beginPath(); g.ellipse(a + sd * pp * -2, b + 1 + pp * pp * 18, .9, 1.6 + pp, 0, 0, TAU); g.fill();
+  }
+  // impact: foam, spray and ripples on the sludge
+  const [ex, ey] = C[N], iy = ey + 4;
+  for (let r = 0; r < 2; r++) {
+    const rp = ((T * 1.4 + r * .5 + ph) % 1 + 1) % 1;
+    g.strokeStyle = `rgba(130,155,100,${.32 * (1 - rp)})`; g.lineWidth = 1;
+    g.beginPath(); g.ellipse(ex, iy, 4 + rp * 15, 1.6 + rp * 5, 0, 0, TAU); g.stroke();
+  }
+  for (let f = 0; f < 6; f++) {
+    const fa = f * 1.05 + T * 3, fr = 2.5 + Math.sin(T * 9 + f * 2) * 1.2;
+    g.fillStyle = `rgba(150,170,128,${.22 + .1 * Math.sin(T * 12 + f)})`;
+    g.beginPath(); g.arc(ex + Math.cos(fa) * fr * 1.4, iy + Math.sin(fa) * fr * .5, 1.3 + (f % 3) * .5, 0, TAU); g.fill();
+  }
+  for (let q = 0; q < 5; q++) {
+    const pp = ((T * 1.9 + q * .21 + ph) % 1 + 1) % 1, dir = (q % 2 ? 1 : -1) * (.5 + q * .18);
+    g.fillStyle = `rgba(150,172,125,${.55 * (1 - pp)})`;
+    g.beginPath(); g.arc(ex + dir * pp * 12, iy - Math.sin(pp * Math.PI) * (5 + q), .9, 0, TAU); g.fill();
+  }
+  g.restore();
+}
 function drawBg(g, T) {
   const ys = [], us = [], cs = [], hs = [];
   const uTop = Math.ceil((S.bgY + 18) / 6) * 6;
@@ -1549,21 +1741,7 @@ function drawBg(g, T) {
       g.fillStyle = 'rgba(120,165,50,.25)';
       g.beginPath(); g.ellipse(x - d.side * 3, y + 9 * d.s, 3 * d.s, 9 * d.s, ang, 0, TAU); g.fill();
     } else {
-      const x = t.c + d.side * (t.hw + LEDGE + FACE * .5), x1 = t.c + d.side * (t.hw - 8);
-      g.save(); g.translate(x, y); g.rotate(ang);
-      g.fillStyle = '#2a211a'; g.beginPath(); g.ellipse(0, 0, 9, 13, 0, 0, TAU); g.fill();
-      g.strokeStyle = '#6a4a2a'; g.lineWidth = 1.5; g.beginPath(); g.ellipse(0, 0, 8.5, 12.5, 0, 0, TAU); g.stroke();
-      g.fillStyle = '#030403'; g.beginPath(); g.ellipse(-d.side * 1.5, 0, 5.5, 9, 0, 0, TAU); g.fill();
-      g.restore();
-      g.save();
-      g.setLineDash([5, 4]); g.lineDashOffset = -T * 46; g.lineCap = 'round';
-      g.strokeStyle = 'rgba(140,185,60,.6)'; g.lineWidth = 4;
-      g.beginPath(); g.moveTo(x - d.side * 5, y); g.quadraticCurveTo(x - d.side * 30, y - 2, x1, y + 16); g.stroke();
-      g.setLineDash([]);
-      const rp = (((T * 1.6 + d.u * .01) % 1) + 1) % 1;
-      g.strokeStyle = `rgba(170,210,90,${.35 * (1 - rp)})`; g.lineWidth = 1;
-      g.beginPath(); g.ellipse(x1, y + 17, 4 + rp * 12, 2 + rp * 4, 0, 0, TAU); g.stroke();
-      g.restore();
+      drawOutlet(g, T, t, d, y, ang);
     }
   }
 }
@@ -1798,9 +1976,10 @@ function updateHUD() {
     ui.contPct.textContent = c + '%';
     ui.cont.classList.toggle('danger', c >= 75);
   }
-  const chips = (S.spread > 0 ? `<span class="chip spread">확산 백신 ${Math.ceil(S.spread)}s</span>` : '') + (S.shield ? '<span class="chip shield">항체 보호막</span>' : '');
+  const chips = `<span class="chip spread">강화 ${S.picks}/4${S.nextTh < THRESH.length ? ` · 다음 ${THRESH[S.nextTh].toLocaleString('ko-KR')}` : ''}</span>`
+    + (S.shield ? '<span class="chip shield">항체 보호막</span>' : '');
   if (last.chips !== chips) { last.chips = chips; ui.chips.innerHTML = chips; }
-  setT(ui.combo, 'combo', S.combo >= 2 ? `콤보 ${S.combo} · ×${mult().toFixed(1)}` : '');
+  setT(ui.combo, 'combo', S.combo >= 2 ? `콤보 ${S.combo}` : '');
   ui.combo.style.opacity = S.combo >= 2 ? Math.min(1, .35 + S.comboT) : 0;
   if (S.boss) ui.bossFill.style.width = (Math.max(0, S.boss.hp) / S.boss.maxhp * 100) + '%';
 }
@@ -1824,12 +2003,16 @@ function toTitle() {
   $('#titleProg').textContent = `전체 정화 ${save.cleared.length}/100`;
 }
 function openMap(sel) {
+  if (save.pendingPerks > 0) { showPerkPick(sel); return; }
+  if (!save.tut && save.cleared.length === 0 && !TUT.on) TUT.on = true;
+  if (TUT.on) { TUT.step = 'pin'; sel = 1; coachHide(); }
   S.state = 'map'; showOnly(ui.map); hideGameUI();
   const n = sel || nextStage() || 100;
   S.mapCh = STAGES[n - 1].c;
   renderMapUI(); drawMap();
   selectStage(n);
   mapOff = mapOffT; blitMap();
+  if (TUT.on && (TUT.step === 'pin' || TUT.step === 'go')) { TUT.step = 'pin'; closeSheet(); tutMap(); }
 }
 function switchChapter(c) {
   if (c < 1 || c > 10 || c === S.mapCh) return;
@@ -1845,15 +2028,13 @@ function renderMapUI() {
   $('#chSub').textContent = chapUnlocked(c) ? `오르비스 시티 · 전체 정화 ${save.cleared.length}/100` : `잠김 · 챕터 ${c - 1}의 최종 보스를 처치하면 열려요`;
   $('#chPrev').disabled = c <= 1; $('#chNext').disabled = c >= 10;
   ui.mapProg.textContent = done >= 10 ? '정화 완료' : `정화 ${done}/10`;
-  const owned = ownedIds();
-  ui.owned.innerHTML = (owned.length
-    ? owned.map(id => `<span class="chip" style="color:${CAT[UPG[id].cat].c}">${UPG[id].name} ${lvl(id)}</span>`).join('')
-    : '<span class="empty">보유 강화 없음 · 구역 투입 시 1개씩 획득</span>')
-    + (save.medkit ? `<span class="chip" style="color:${CAT.def.c}">응급 백신볼 ×${save.medkit}</span>` : '')
-    + '<button class="linkish" id="resetRun">처음부터</button>';
+  const perks = permIds(), total = perks.reduce((a, id) => a + permLvl(id), 0);
+  ui.owned.innerHTML = '<button class="linkish" id="resetRun">처음부터</button>'
+    + `<button class="perk-btn" id="perkBtn" aria-haspopup="dialog">${svgIcon('shield')}<span>보유 능력</span><b>${total}</b></button>`;
+  $('#perkBtn').addEventListener('click', openPerkPop);
   const rb = $('#resetRun');
   rb.addEventListener('click', () => {
-    if (!rb.classList.contains('arm')) { rb.classList.add('arm'); rb.textContent = '진행·강화 초기화?'; setTimeout(() => { rb.classList.remove('arm'); rb.textContent = '처음부터'; }, 3000); return; }
+    if (!rb.classList.contains('arm')) { rb.classList.add('arm'); rb.textContent = '진행·능력 초기화?'; setTimeout(() => { rb.classList.remove('arm'); rb.textContent = '처음부터'; }, 3000); return; }
     save = freshSave(); persist(); openMap(1);
   });
   ui.pins.innerHTML = '';
@@ -1870,6 +2051,74 @@ function renderMapUI() {
     ui.pins.appendChild(b);
   }
 }
+/* ---------- First-run tutorial (stage 1-1): map → pick → move → score picks ---------- */
+const TUT = { on: false, step: null, target: null, moved: 0, timer: 0 };
+const coachEl = $('#coach'), holeEl = $('#coachHole'), bubbleEl = $('#coachBubble');
+function placeHole(el) {
+  const fr = frame.getBoundingClientRect(), r = el.getBoundingClientRect(), pad = 6;
+  holeEl.style.left = (r.left - fr.left - pad) + 'px'; holeEl.style.top = (r.top - fr.top - pad) + 'px';
+  holeEl.style.width = (r.width + pad * 2) + 'px'; holeEl.style.height = (r.height + pad * 2) + 'px';
+}
+function coach(step, html, { target = null, pos = 'top', demo = false, dim = true } = {}) {
+  coachEl.hidden = false;
+  $('#coachStep').textContent = `튜토리얼 ${step}/4`;
+  $('#coachText').innerHTML = html;
+  $('#coachDemo').hidden = !demo;
+  bubbleEl.className = 'coach-bubble ' + pos;
+  TUT.target = target;
+  holeEl.hidden = !target;
+  coachEl.style.background = !target && dim ? 'rgba(2,5,4,.35)' : 'transparent';
+  if (target) placeHole(target);
+}
+function coachHide() { coachEl.hidden = true; TUT.target = null; clearTimeout(TUT.timer); }
+function tutMap() {
+  if (TUT.step === 'pin' && (ui.sheet.hidden || S.sel !== 1)) {
+    TUT.step = 'pin';
+    const pin = ui.pins.querySelector('.pin[data-n="1"]');
+    coach(1, '오르비스 시티의 하수관 지도예요. 깜빡이는 <b>1번 핀</b>을 터치해 첫 구역을 선택해 보세요.', { target: pin ? pin.querySelector('.pin-head') : null, pos: 'bottom' });
+  } else {
+    TUT.step = 'go';
+    coach(1, '구역 정보가 열렸어요. <b>투입</b>을 누르면 하수관으로 들어가요.', { target: $('#shGo'), pos: 'top' });
+  }
+}
+function tutPick() {
+  coach(2, '구역에 들어갈 때마다 <b>강화 카드 3장 중 1장</b>을 골라요. 고른 강화는 이 구역에서만 유지되고, 끝나면 초기화돼요.', { target: $('#cards'), pos: 'bottom' });
+}
+function tutMove() {
+  coach(3, '화면 <b>아무 곳이나 누른 채 좌우로 밀면</b> 백신볼이 움직여요. 누른 자리에 조작 패드가 나타나요. 직접 움직여 보세요!', { pos: 'top', demo: true, dim: false });
+}
+function tutMoved(d) {
+  if (!TUT.on || TUT.step !== 'move') return;
+  TUT.moved += d;
+  if (TUT.moved > 110) {
+    TUT.step = 'th'; sfx('pick');
+    coach(3, '좋아요! 항체탄은 <b>자동으로 발사</b>돼요. 바이러스를 놓치면 오염도가 올라가니 최대한 처치하세요.', { pos: 'top', dim: false });
+    TUT.timer = setTimeout(() => { if (TUT.on && TUT.step === 'th' && S.state === 'play') coachHide(); }, 4200);
+  }
+}
+function tutThreshold() {
+  coach(4, '점수 <b>3,000점</b>을 달성해 강화를 하나 더 고를 수 있어요. <b>6,000점</b>과 <b>9,000점</b>에서도 한 번씩 더 골라요. 구역마다 최대 4개예요.', { target: $('#cards'), pos: 'bottom' });
+}
+function tutDone() {
+  TUT.on = false; TUT.step = null; coachHide();
+  save.tut = true; persist();
+}
+$('#coachSkip').addEventListener('click', () => {
+  const st = S.state;
+  tutDone();
+  if (st === 'map') selectStage(S.sel || 1);
+});
+
+/* Map popup: chapter-reward abilities the player keeps */
+function openPerkPop() {
+  const ids = permIds(), list = $('#perkList');
+  list.innerHTML = ids.length ? ids.map(id => {
+    const U = UPG[id], C = CAT[U.cat], l = permLvl(id);
+    return `<li style="--c:${C.c}"><span class="ic">${svgIcon(id)}</span><span class="tx"><span class="top"><b>${U.name}</b><span class="cat">${C.label}</span><span class="lv">Lv${l}${l >= U.max ? ' · 최대' : ''}</span></span><span class="ds">${U.desc(l)}</span></span></li>`;
+  }).join('') : '<li class="empty">아직 없어요. 챕터의 최종 보스를 처치하면 능력 3개를 골라 가져갈 수 있어요.</li>';
+  $('#perkPop').hidden = false; $('#perkClose').focus();
+}
+function closePerkPop() { $('#perkPop').hidden = true; }
 function selectStage(n) {
   const st = STAGES[n - 1]; S.sel = n;
   ui.pins.querySelectorAll('.pin').forEach(p => p.classList.toggle('sel', +p.dataset.n === n));
@@ -1880,67 +2129,125 @@ function selectStage(n) {
   $('#shArea').textContent = `${st.area} · 지하 ${st.depth}m · 관로 ${st.len}m`;
   const danger = 1 + Math.min(4, Math.floor(st.diff * 5));
   $('#shDots').innerHTML = Array.from({ length: 5 }, (_, i) => `<i class="${i < danger ? 'on' : ''}"></i>`).join('');
-  $('#shBest').textContent = save.best[n] ? save.best[n].toLocaleString('ko-KR') : '—';
+  $('#shBest').textContent = save.best[n] ? `${save.best[n].toLocaleString('ko-KR')} / 12,000` : '—';
   $('#shFoes').innerHTML = st.pool.map(t => `<img src="${SPRITE_SRC[VT[t].spr[0]]}" alt="${VT[t].name}" title="${VT[t].name}">`).join('')
     + (st.boss ? `<img class="boss" src="${SPRITE_SRC.boss}" alt="${st.boss === 'final' ? '모체 바이러스' : '숙주 바이러스'}">` : '');
   const go = $('#shGo'), note = $('#shNote');
   if (!unlocked(n)) { go.disabled = true; go.textContent = '잠김'; note.textContent = `${label(STAGES[n - 2])} 구역을 먼저 정화해야 열려요.`; }
-  else if (isCleared(n)) { go.disabled = false; go.textContent = '다시 투입'; note.textContent = '정화 완료 구역이에요. 강화 선택 없이 기록에 도전합니다.'; }
-  else if (save.picked[n]) { go.disabled = false; go.textContent = '투입'; note.textContent = '이 구역의 강화는 이미 골랐어요. 바로 투입합니다.'; }
-  else { go.disabled = false; go.textContent = '투입'; note.textContent = '투입 전에 강화 3개 중 1개를 골라요. 강화는 계속 유지돼요.'; }
+  else {
+    go.disabled = false; go.textContent = isCleared(n) ? '다시 투입' : '투입';
+    note.textContent = '투입할 때 강화 1개, 점수 3,000 · 6,000 · 9,000마다 1개씩 더 골라요. 구역이 끝나면 강화는 초기화돼요.';
+  }
   ui.sheet.hidden = false;
   focusPin(n);
+  if (TUT.on && (TUT.step === 'pin' || TUT.step === 'go')) tutMap();
 }
+function closeSheet() { ui.sheet.hidden = true; ui.pins.querySelectorAll('.pin').forEach(p => p.classList.remove('sel')); }
 function deploy(n) {
   if (!unlocked(n)) return;
   initAudio();
-  if (!isCleared(n) && !save.picked[n]) showPick(n); else startStage(n);
+  if (TUT.on) TUT.step = 'pick';
+  showPick(n);
 }
+
+/* Upgrade cards, shared by three moments: stage start, score thresholds, chapter reward */
 let pickChoices = [];
-function showPick(n) {
-  reset(n); S.state = 'pick'; S.pickN = n; showOnly(ui.pick); hideGameUI();
-  const st = STAGES[n - 1];
-  $('#pickEyebrow').textContent = `투입 전 강화 · ${label(st)} ${st.name}`;
-  pickChoices = rollChoices();
+function renderCards(choices) {
+  pickChoices = choices;
   const cards = $('#cards'); cards.innerHTML = '';
-  pickChoices.forEach((id, i) => {
+  choices.forEach((id, i) => {
     const U = UPG[id], l = lvl(id), C = CAT[U.cat];
     const b = document.createElement('button');
     b.className = 'upcard'; b.style.setProperty('--c', C.c);
-    const lvTxt = U.extra ? '<b>1회용</b>' : `${l ? `Lv${l} → ` : ''}<b>Lv${l + 1}</b>${l + 1 >= U.max ? ' · 최대' : ''}`;
+    const lvTxt = U.extra ? '<b>즉시</b>' : `${l ? `Lv${l} → ` : ''}<b>Lv${l + 1}</b>${l + 1 >= U.max ? ' · 최대' : ''}`;
     b.innerHTML = `<span class="ic">${svgIcon(id)}</span><span class="tx"><span class="top"><span class="nm">${U.name}</span><span class="cat">${C.label}</span>`
       + `<span class="lv">${lvTxt}</span></span><span class="ds">${U.desc(l + 1)}</span></span>`;
     b.addEventListener('click', () => choose(id));
     b.setAttribute('aria-keyshortcuts', String(i + 1));
     cards.appendChild(b);
   });
-  const owned = ownedIds();
-  $('#pickOwned').textContent = owned.length ? '보유 · ' + owned.map(id => `${UPG[id].name} ${lvl(id)}`).join(' · ') : '첫 강화를 골라 보세요';
+}
+const upList = ids => ids.map(id => `${UPG[id].name} ${lvl(id)}`).join(' · ');
+function showPick(n) {
+  reset(n); S.state = 'pick'; S.pickN = n; showOnly(ui.pick); hideGameUI();
+  const st = STAGES[n - 1];
+  $('#pickEyebrow').textContent = `투입 전 강화 · ${label(st)} ${st.name}`;
+  $('#pickTitle').textContent = '강화 하나를 고르세요';
+  renderCards(rollChoices('stage', st.c));
+  const perks = permIds();
+  $('#pickOwned').textContent = perks.length ? '챕터 보상 능력 · ' + upList(perks) : '이 구역에서 고른 강화는 구역이 끝나면 초기화돼요';
+  if (TUT.on) tutPick();
+}
+function showLevelUp() {
+  S.state = 'levelup'; showOnly(ui.pick);
+  $('#pickEyebrow').textContent = `점수 ${THRESH[S.nextTh - S.pendingPick].toLocaleString('ko-KR')} 달성 · 추가 강화 ${S.picks}/3`;
+  $('#pickTitle').textContent = '강화 하나를 더 고르세요';
+  renderCards(rollChoices('stage', S.chap));
+  $('#pickOwned').textContent = '현재 · ' + (upList(ownedIds()) || '없음');
+  sfx('power');
+  if (TUT.on) tutThreshold();
+}
+function showPerkPick(ret) {
+  S.state = 'perk'; S.up = {}; S.perkRet = ret; showOnly(ui.pick); hideGameUI();
+  const k = 3 - ((save.pendingPerks - 1) % 3);
+  $('#pickEyebrow').textContent = `챕터 정화 보상 · ${k}/3`;
+  $('#pickTitle').textContent = '다음 챕터로 가져갈 능력';
+  renderCards(rollChoices('perk', STAGES[(ret || nextStage() || 100) - 1].c));
+  const perks = permIds();
+  $('#pickOwned').textContent = perks.length ? '보유 · ' + upList(perks) : '고른 능력은 이후 모든 구역에서 계속 적용돼요';
+}
+function applyUp(id) {
+  if (UPG[id].extra) { S.lives = Math.min(P.maxLives, S.lives + 1); return; }
+  S.up[id] = (S.up[id] || 0) + 1;
+  P = stats();
+  if (id === 'hull') S.lives++;
+  if (id === 'shield') S.shield = true;
 }
 function choose(id) {
-  if (S.state !== 'pick') return;
-  if (UPG[id].extra) save.medkit = (save.medkit || 0) + 1; else save.up[id] = lvl(id) + 1;
-  save.picked[S.pickN] = true; persist();
   sfx('pick');
-  startStage(S.pickN);
+  if (S.state === 'pick') {
+    applyUp(id); S.picks = 1;
+    if (TUT.on) { TUT.step = 'move'; TUT.moved = 0; coachHide(); }
+    startStage(S.pickN);
+  } else if (S.state === 'levelup') {
+    applyUp(id); S.picks++; S.pendingPick--;
+    if (S.pendingPick > 0) { showLevelUp(); return; }
+    S.state = 'play'; showOnly(null);
+    player.inv = Math.max(player.inv, .8);
+    if (TUT.on && TUT.step === 'th') tutDone();
+    floatText(player.x, player.y - 34, `${UPG[id].name} Lv${lvl(id)}`, CAT[UPG[id].cat].c, 12);
+  } else if (S.state === 'perk') {
+    save.perm[id] = permLvl(id) + 1; save.pendingPerks--; persist();
+    if (save.pendingPerks > 0) showPerkPick(S.perkRet);
+    else openMap(S.perkRet);
+  }
 }
 function startStage(n) {
-  reset(n); for (const k in last) delete last[k];
-  if (save.medkit > 0) { save.medkit--; persist(); S.lives += 1; }
+  for (const k in last) delete last[k];
   S.state = 'play'; showOnly(null); ui.hud.hidden = false; ui.bossbar.hidden = true;
   const st = STAGES[n - 1];
   ui.stageLab.textContent = label(st); ui.stageName.textContent = st.name;
   $('#introNo').textContent = `${label(st)} · ${stageKind(st)}`; $('#introName').textContent = st.name;
   banner(ui.intro);
   keepAwake();
+  if (TUT.on && TUT.step === 'move') setTimeout(() => { if (TUT.on && TUT.step === 'move' && S.state === 'play') tutMove(); }, 1400);
 }
-function pause() { if (S.state !== 'play') return; S.state = 'pause'; showOnly(ui.pause); $('#resumeBtn').focus(); }
-function resume() { if (S.state !== 'pause') return; S.state = 'play'; showOnly(null); keepAwake(); }
+function pause() {
+  if (S.state !== 'play') return;
+  S.state = 'pause'; showOnly(ui.pause);
+  if (TUT.on) coachHide();
+  const ids = ownedIds();
+  $('#pauseUps').textContent = ids.length ? '현재 강화 · ' + upList(ids) : '';
+  $('#resumeBtn').focus();
+}
+function resume() { if (S.state !== 'pause') return; S.state = 'play'; showOnly(null); keepAwake(); if (TUT.on && TUT.step === 'move') tutMove(); }
 function stageClear() {
   if (S.state !== 'play') return;
   S.state = 'clear';
-  const n = S.stageN, st = STAGES[n - 1];
-  if (!isCleared(n)) save.cleared.push(n);
+  const n = S.stageN, st = STAGES[n - 1], first = !isCleared(n);
+  if (first) save.cleared.push(n);
+  if (TUT.on) tutDone();
+  if (first && st.s === 10 && n < 100) save.pendingPerks += 3;
   const isBest = S.score > (save.best[n] || 0);
   if (isBest) save.best[n] = S.score;
   persist(); sfx('clear');
@@ -1948,21 +2255,22 @@ function stageClear() {
   $('#cEyebrow').textContent = `정화 보고서 · ${label(st)}`;
   $('#cTitle').textContent = n === 100 ? '오르비스 시티 정화 완료' : st.s === 10 ? `챕터 ${st.c} 정화 완료` : '정화 완료';
   $('#cSub').textContent = n === 100 ? '도시의 모든 하수관에서 바이러스를 몰아냈어요'
-    : st.s === 10 ? `${CHAPTERS[st.c - 1].name}을 정화했어요. 챕터 ${st.c + 1}이 열렸어요`
+    : st.s === 10 && first ? `챕터 ${st.c + 1}로 가져갈 능력 3개를 골라 주세요`
     : `${st.name} 구역의 바이러스를 소멸시켰어요`;
   $('#cBest').hidden = !isBest;
   $('#cScore').textContent = S.score.toLocaleString('ko-KR');
   $('#cKills').textContent = S.kills;
   $('#cCombo').textContent = S.maxCombo;
-  $('#cLives').textContent = `${S.lives}/${P.maxLives}`;
+  $('#cLives').textContent = `${S.picks}/4`;
   const nextBtn = $('#nextBtn');
   nextBtn.hidden = n >= 100;
-  if (n < 100) nextBtn.textContent = `다음 구역 · ${label(STAGES[n])}`;
+  if (n < 100) nextBtn.textContent = save.pendingPerks > 0 ? '챕터 보상 · 능력 3개 고르기' : `다음 구역 · ${label(STAGES[n])}`;
   setTimeout(() => { if (S.state === 'clear') { showOnly(ui.clear); ui.hud.hidden = true; (n >= 100 ? $('#cMapBtn') : nextBtn).focus(); } }, 900);
 }
 function gameOver(reason) {
   if (S.state !== 'play') return;
   S.state = 'over';
+  if (TUT.on) coachHide();
   burst(player.x, player.y, ['#ffffff', '#3fe1f5', '#ff8fa3', '#c8f6ff'], 50, 240, 1.3);
   ring(player.x, player.y, 90, '#3fe1f5', .6);
   shake(12); sfx('boom');
@@ -1999,10 +2307,31 @@ function titleStart() {
 ui.title.addEventListener('click', titleStart);
 ui.title.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); titleStart(); } });
 document.querySelectorAll('.title-foot button').forEach(b => b.addEventListener('click', e => e.stopPropagation()));
+/* DEV ONLY: temporary reset on the title screen for checking the tutorial during development.
+   Set DEV_TOOLS to false (or delete this block and the #devReset button) before release. */
+const DEV_TOOLS = true;
+const devBtn = $('#devReset');
+devBtn.hidden = !DEV_TOOLS;
+devBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  if (!devBtn.classList.contains('arm')) {
+    devBtn.classList.add('arm'); devBtn.textContent = '한 번 더 탭';
+    clearTimeout(devBtn._t); devBtn._t = setTimeout(() => { devBtn.classList.remove('arm'); devBtn.textContent = 'DEV 초기화'; }, 3000);
+    return;
+  }
+  clearTimeout(devBtn._t); devBtn.classList.remove('arm'); devBtn.textContent = 'DEV 초기화';
+  save = freshSave(); persist();
+  TUT.on = false; TUT.step = null; coachHide();
+  $('#titleProg').textContent = '전체 정화 0/100';
+  const t = document.createElement('div'); t.className = 'dev-toast'; t.textContent = '데이터 초기화 완료 · 화면을 터치하면 튜토리얼부터 시작돼요';
+  ui.title.appendChild(t); setTimeout(() => t.remove(), 2500);
+});
 $('#briefBtn').addEventListener('click', () => { S.state = 'brief'; showOnly(ui.brief); $('#briefClose').focus(); });
 $('#briefClose').addEventListener('click', () => { S.state = 'title'; showOnly(ui.title); });
 $('#mapBack').addEventListener('click', toTitle);
-$('#shClose').addEventListener('click', () => { ui.sheet.hidden = true; ui.pins.querySelectorAll('.pin').forEach(p => p.classList.remove('sel')); });
+$('#perkClose').addEventListener('click', closePerkPop);
+$('#perkPop').addEventListener('click', e => { if (e.target.id === 'perkPop') closePerkPop(); });
+$('#shClose').addEventListener('click', () => { closeSheet(); if (TUT.on && TUT.step === 'go') { TUT.step = 'pin'; tutMap(); } });
 /* Map: drag to pan vertically, tap empty map to close the sheet */
 let mapDrag = null;
 mapCv.addEventListener('pointerdown', e => {
@@ -2017,15 +2346,16 @@ mapCv.addEventListener('pointermove', e => {
 });
 mapCv.addEventListener('pointerup', e => {
   if (mapDrag && e.pointerId === mapDrag.id && !mapDrag.moved) {
-    ui.sheet.hidden = true; ui.pins.querySelectorAll('.pin').forEach(p => p.classList.remove('sel'));
+    closeSheet();
+    if (TUT.on && TUT.step === 'go') { TUT.step = 'pin'; tutMap(); }
   }
   mapDrag = null;
 });
 mapCv.addEventListener('pointercancel', () => { mapDrag = null; });
 $('#shGo').addEventListener('click', () => deploy(S.sel));
-$('#retryBtn').addEventListener('click', () => { initAudio(); startStage(S.stageN); });
+$('#retryBtn').addEventListener('click', () => { initAudio(); deploy(S.stageN); });
 $('#homeBtn').addEventListener('click', () => openMap(S.stageN));
-$('#nextBtn').addEventListener('click', () => deploy(S.stageN + 1));
+$('#nextBtn').addEventListener('click', () => save.pendingPerks > 0 ? showPerkPick(S.stageN + 1) : deploy(S.stageN + 1));
 $('#cMapBtn').addEventListener('click', () => openMap(Math.min(100, S.stageN + 1)));
 $('#chPrev').addEventListener('click', () => switchChapter(S.mapCh - 1));
 $('#chNext').addEventListener('click', () => switchChapter(S.mapCh + 1));
@@ -2045,24 +2375,54 @@ bgmBtns.forEach(b => b.addEventListener('click', () => {
 
 /* Input: relative drag anywhere on the screen, plus arrow keys */
 let drag = null;
+/* Floating pad: appears where the finger lands, the knob follows the finger, the base slides along if the finger runs past it,
+   and the arrow on the side the ball is moving toward lights up. Movement itself stays a precise relative drag. */
+const stick = $('#stick'), knob = stick.querySelector('.knob'), arrL = stick.querySelector('.l'), arrR = stick.querySelector('.r');
+const STK = { bx: 0, by: 0, lastX: 0, dirT: 0, dir: 0 };
+function stickShow(e) {
+  const r = frame.getBoundingClientRect();
+  STK.bx = e.clientX - r.left; STK.by = e.clientY - r.top; STK.lastX = e.clientX; STK.dir = 0;
+  stick.style.transform = `translate(${STK.bx}px, ${STK.by}px)`;
+  knob.style.transform = 'translateX(0px)';
+  arrL.classList.remove('act'); arrR.classList.remove('act');
+  stick.classList.add('on');
+}
+function stickMove(e) {
+  const r = frame.getBoundingClientRect(), fx = e.clientX - r.left, maxR = stick.offsetWidth / 2 - knob.offsetWidth / 2 - 2;
+  let off = fx - STK.bx;
+  if (Math.abs(off) > maxR) { STK.bx += off - Math.sign(off) * maxR; off = Math.sign(off) * maxR; stick.style.transform = `translate(${STK.bx}px, ${STK.by}px)`; }
+  knob.style.transform = `translateX(${off}px)`;
+  const dx = e.clientX - STK.lastX; STK.lastX = e.clientX;
+  if (Math.abs(dx) > .5) { STK.dir = Math.sign(dx); STK.dirT = performance.now(); }
+}
+function stickTick() {
+  if (!stick.classList.contains('on')) return;
+  const live = performance.now() - STK.dirT < 140 ? STK.dir : 0;
+  arrL.classList.toggle('act', live < 0); arrR.classList.toggle('act', live > 0);
+}
+function stickHide() { stick.classList.remove('on'); }
 cv.addEventListener('pointerdown', e => {
   if (S.state !== 'play') return;
   e.preventDefault();
   try { cv.setPointerCapture(e.pointerId); } catch (_) {}
   drag = { id: e.pointerId, sx: e.clientX, px: player.tx };
+  stickShow(e);
 });
 cv.addEventListener('pointermove', e => {
   if (!drag || e.pointerId !== drag.id || S.state !== 'play') return;
-  const k = W / frame.clientWidth;
+  const k = W / frame.clientWidth, before = player.tx;
   player.tx = clamp(drag.px + (e.clientX - drag.sx) * k * 1.15, 10, W - 10);
+  stickMove(e);
+  if (TUT.on) tutMoved(Math.abs(player.tx - before));
 });
-const endDrag = e => { if (drag && e.pointerId === drag.id) drag = null; };
+const endDrag = e => { if (drag && e.pointerId === drag.id) { drag = null; stickHide(); } };
 cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
 addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { keys.l = true; e.preventDefault(); }
   if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { keys.r = true; e.preventDefault(); }
+  if (e.key === 'Escape' && !$('#perkPop').hidden) { closePerkPop(); return; }
   if (e.key === 'p' || e.key === 'P' || e.key === 'Escape') { S.state === 'play' ? pause() : S.state === 'pause' && resume(); }
-  if (S.state === 'pick' && ['1', '2', '3'].includes(e.key) && pickChoices[+e.key - 1]) choose(pickChoices[+e.key - 1]);
+  if (['pick', 'levelup', 'perk'].includes(S.state) && ['1', '2', '3'].includes(e.key) && pickChoices[+e.key - 1]) choose(pickChoices[+e.key - 1]);
 });
 addEventListener('keyup', e => {
   if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.l = false;
@@ -2092,7 +2452,10 @@ function loop(now) {
   if (dt > .05) dt = .05;
   update(dt);
   if (S.state !== 'map' && S.state !== 'title') draw();
-  else if (Math.abs(mapOffT - mapOff) > .3) { mapOff += (mapOffT - mapOff) * Math.min(1, dt * 8); blitMap(); }
+  stickTick();
+  if (S.state !== 'play' && drag) { drag = null; stickHide(); }
+  if (Math.abs(mapOffT - mapOff) > .3 && S.state === 'map') { mapOff += (mapOffT - mapOff) * Math.min(1, dt * 8); blitMap(); }
+  if (TUT.target) placeHole(TUT.target);
   updateHUD();
   requestAnimationFrame(loop);
 }
